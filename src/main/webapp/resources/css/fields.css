@@ -1,0 +1,39 @@
+.textArea{
+    width: 700px !important;
+    resize: none;
+}
+
+.invitationTextArea{
+    resize: none;
+    width: 100% !important;
+}
+
+.detailLabel{
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.detailText{
+    /*text-transform: capitalize;*/
+    font-size: 0.9em;
+    white-space: pre-line
+}
+
+
+.detailTextsmall{
+    font-size: 0.8em;
+    white-space: pre-line
+}
+
+.detailLabelsmall{
+    text-transform: uppercase;
+    font-size: 0.6em;
+    font-weight: bold;
+}
+
+.labelForm{
+    font-weight: normal !important;
+    font-size: 9px !important
+}
+

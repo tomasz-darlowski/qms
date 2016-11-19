@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Master.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="title">
+        #{msg.schedule}
+    </ui:define>
+
+    <ui:define name="left">
+        <h:form>
+            <p:commandLink value="#{msg.addevent}" action="#{schedulerMBean.addNewEvent()}" ajax="false" immediate="true" styleClass="menuLink" /><br/>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="messages"  life="800"/>
+        <h:form id="scheduleForm">
+            <p:schedule value="#{schedulerMBean.schedulerModel.lazyModel}" widgetVar="qmsSchedule" view="agendaWeek"
+                        draggable="false" resizable="false"  firstHour="8" rightHeaderTemplate="month,agendaWeek" showWeekends="true" allDaySlot="true" slotMinutes="30"
+                        axisFormat="H:mm" timeFormat="H:mm" timeZone="" locale="#{userMBean.user.locale}" styleClass="scheduler" >
+                <p:ajax event="dateSelect" listener="#{schedulerMBean.onDateSelect}"  oncomplete="if (args.showDialog){showDialog.show();} else {showDialog.hide();}" update=":dialogForm:showDetails :messages"/>
+                <p:ajax event="eventSelect" listener="#{schedulerMBean.onEventSelect}" update=":dialogForm:showDetails :messages" oncomplete="showDialog.show();" />
+            </p:schedule>
+        </h:form>
+        <!--Show dialog-->
+        <h:form id="dialogForm">
+            <p:dialog widgetVar="showDialog" modal="true" position="top" id="showDetails" header="#{msg.addevent}"
+                      closable="true" resizable="false" width="600" closeOnEscape="true" draggable="false">
+                <h:panelGrid columns="2"  >
+                    <h:outputLabel for="title" value="#{msg.event}:" rendered="#{schedulerMBean.schedulerModel.event.title.length()>0}"/>
+                    <h:outputText id="title" value="#{schedulerMBean.schedulerModel.event.title}" rendered="#{schedulerMBean.schedulerModel.event.title.length()>0}"/>
+                    <h:outputLabel for="from" value="#{msg.from}:" />
+                    <h:outputText id="from" value="#{schedulerMBean.schedulerModel.event.dateFrom}" >
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone=""/>
+                    </h:outputText>
+                    <h:outputLabel for="to" value="#{msg.to}:" />
+                    <h:outputText id="to" value="#{schedulerMBean.schedulerModel.event.dateTo}" >
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone=""/>
+                    </h:outputText>
+                </h:panelGrid>
+                <p:commandButton id="button1" icon="ui-icon-search" value="#{msg.view}" action="view" rendered="#{schedulerMBean.schedulerModel.viewButtonVisible}" styleClass="tableButton"/>
+                <p:commandButton id="button2" icon="ui-icon-plusthick" value="#{msg.create}" action="create" rendered="#{schedulerMBean.schedulerModel.createButtonVisible}" styleClass="tableButton"/>
+                <p:commandButton id="button3" icon="ui-icon-pencil" value="#{msg.edit}" action="edit" rendered="#{schedulerMBean.schedulerModel.editButtonVisible}" styleClass="tableButton"/>
+            </p:dialog>
+        </h:form>
+
+        <h:outputScript library="js" name="qmsCalendar.js"/>
+        <h:outputStylesheet library="css" name="calendar.css"/>
+    </ui:define>
+
+</ui:composition>

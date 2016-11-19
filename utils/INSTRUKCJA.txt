@@ -1,0 +1,12 @@
+Instalacja i przygotowanie bazy danych
+W celu utworzenia bazy nale¿y zainstalowaæ bazê danych PostgreSQL. Uruchamiamy plik postgresql-9.3.2-1-windows-x64.exe zamieszczony na p³ycie do³¹czonej do tej pracy. Po zakoñczonej instalacji uruchamiamy aplikacjê do zarz¹dzania baz¹ danych(pgAdmin III). Przechodzimy do miejsca instalacji i uruchamiamy skrypt:
+<œcie¿ka instalacji>\bin\psql -U postgres -a -f <œcie¿ka do skryptu>\createQMSDBscript.sql
+nastêpnie mo¿emy dodatkowo, tylko w celach testowych, uruchomiæ skrypt dodaj¹cego jednego u¿ytkownika o danych autoryzacyjnych: login - „user1”, has³o - „pwd”.
+<œcie¿ka instalacji>\bin\psql -U postgres -a -f <œcie¿ka do skryptu>\createUser.sql
+Je¿eli nie uruchomimy drugiego skryptu musimy rêcznie dodaæ jednego u¿ytkownika w bazie danych, aby mo¿na by³o siê zalogowaæ do systemu.
+	
+Instalacja i konfiguracja serwera i aplikacji
+	Instalacja serwera polega na uruchomieniu pliku java_ee_sdk-7-jdk7-windows-x64-ml.exe z do³¹czonej p³yty. Po instalacji podmieniamy jeszcze  bibliotekê javax.faces.jar w katalogu:
+<œcie¿ka_instalacji>\glassfish\modules\
+Po instalacji uruchamiamy:
+<œcie¿ka_instalacji>\glassfish\bin\startserv.bat

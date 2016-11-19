@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene Scope="All Faces Configurations" version="2">
+    <Scope Scope="Faces Configuration Only">
+        <Node id="app/Gauges/Edit.xhtml" x="400" y="600" zoom="true"/>
+        <Node id="SignUp.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="app/Components/Create.xhtml" x="150" y="150" zoom="true"/>
+        <Node id="*" x="116" y="181" zoom="true"/>
+        <Node id="app/Scheduler/Scheduler.xhtml" x="160" y="358" zoom="true"/>
+        <Node id="app/Components/View.xhtml" x="672" y="540" zoom="true"/>
+        <Node id="Remind.xhtml" x="650" y="300" zoom="true"/>
+        <Node id="app/Scheduler/Edit.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="app/Gauges/View.xhtml" x="1088" y="274" zoom="true"/>
+        <Node id="app/Gauges/Create.xhtml" x="1007" y="343" zoom="true"/>
+        <Node id="app/Scheduler/View.xhtml" x="705" y="32" zoom="true"/>
+        <Node id="app/Scheduler/Create.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="app/Gauges/Gauges.xhtml" x="1064" y="507" zoom="true"/>
+        <Node id="app/Components/Components.xhtml" x="693" y="448" zoom="true"/>
+        <Node id="Login.xhtml" x="150" y="600" zoom="true"/>
+        <Node id="app/Components/Edit.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="app/Collections/Collections.xhtml" x="400" y="150" zoom="true"/>
+    </Scope>
+    <Scope Scope="Project">
+        <Node id="app/Gauges/Edit.xhtml" x="400" y="600" zoom="true"/>
+        <Node id="resources/qms/MenuDetailView.xhtml" x="1650" y="150" zoom="true"/>
+        <Node id="Templates/Master.xhtml" x="489" y="38" zoom="true"/>
+        <Node id="app/Components/Create.xhtml" x="150" y="150" zoom="true"/>
+        <Node id="Templates/StaticContent/Header.xhtml" x="988" y="32" zoom="true"/>
+        <Node id="resources/qms/DialogUploadImages.xhtml" x="150" y="900" zoom="true"/>
+        <Node id="app/Collections/Project.xhtml" x="400" y="900" zoom="true"/>
+        <Node id="app/Components/View.xhtml" x="900" y="600" zoom="true"/>
+        <Node id="app/Scheduler/Scheduler.xhtml" x="160" y="358" zoom="true"/>
+        <Node id="app/Dashboard/Dashboard.xhtml" x="1400" y="150" zoom="true"/>
+        <Node id="Remind.xhtml" x="650" y="300" zoom="true"/>
+        <Node id="app/Scheduler/Edit.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="resources/qms/leftMenuLink.xhtml" x="1150" y="300" zoom="true"/>
+        <Node id="resources/qms/inputText.xhtml" x="150" y="1050" zoom="true"/>
+        <Node id="resources/qms/fileTable.xhtml" x="900" y="450" zoom="true"/>
+        <Node id="app/Scheduler/View.xhtml" x="204" y="128" zoom="true"/>
+        <Node id="app/Collections/Customer.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="Templates/StaticContent/validateDialog.xhtml" x="400" y="750" zoom="true"/>
+        <Node id="app/Gauges/Gauges.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="Login.xhtml" x="150" y="600" zoom="true"/>
+        <Node id="app/Collections/Collections.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="resources/qms/DialogUploadDocs.xhtml" x="150" y="750" zoom="true"/>
+        <Node id="SignUp.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="Templates/Detail.xhtml" x="748" y="37" zoom="true"/>
+        <Node id="resources/qms/scheduleMenu.xhtml" x="400" y="300" zoom="true"/>
+        <Node id="app/Collections/Supplier.xhtml" x="650" y="750" zoom="true"/>
+        <Node id="*" x="52" y="257" zoom="true"/>
+        <Node id="resources/qms/confirmDialog.xhtml" x="1400" y="300" zoom="true"/>
+        <Node id="app/Gauges/View.xhtml" x="1150" y="450" zoom="true"/>
+        <Node id="app/Gauges/Create.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="resources/qms/supplierCombo.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="resources/qms/viewFileTable.xhtml" x="650" y="600" zoom="true"/>
+        <Node id="app/Scheduler/Create.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="resources/qms/SeverityComboBox.xhtml" x="900" y="300" zoom="true"/>
+        <Node id="app/Components/Components.xhtml" x="693" y="448" zoom="true"/>
+        <Node id="app/Components/Edit.xhtml" x="900" y="150" zoom="true"/>
+    </Scope>
+    <Scope Scope="All Faces Configurations">
+        <Node id="app/Gauges/Edit.xhtml" x="900" y="300" zoom="true"/>
+        <Node id="app/Components/Create.xhtml" x="150" y="750" zoom="true"/>
+        <Node id="app/Components/View.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="app/Scheduler/Scheduler.xhtml" x="400" y="600" zoom="true"/>
+        <Node id="Remind.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="app/Scheduler/Invitation.xhtml" x="1650" y="150" zoom="true"/>
+        <Node id="app/Scheduler/Edit.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="app/Issues/Create.xhtml" x="400" y="750" zoom="true"/>
+        <Node id="app/Documents/Documents.xhtml" x="1400" y="300" zoom="true"/>
+        <Node id="app/Scheduler/View.xhtml" x="150" y="600" zoom="true"/>
+        <Node id="app/Collections/Customer.xhtml" x="1150" y="450" zoom="true"/>
+        <Node id="app/Gauges/Gauges.xhtml" x="1400" y="150" zoom="true"/>
+        <Node id="Login.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="SignUp.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="app/Issues/Edit.xhtml" x="900" y="450" zoom="true"/>
+        <Node id="app/Collections/Supplier.xhtml" x="650" y="300" zoom="true"/>
+        <Node id="*" x="1150" y="300" zoom="true"/>
+        <Node id="app/Gauges/View.xhtml" x="400" y="300" zoom="true"/>
+        <Node id="app/Gauges/Create.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="app/Issues/View.xhtml" x="150" y="900" zoom="true"/>
+        <Node id="app/Scheduler/Create.xhtml" x="150" y="150" zoom="true"/>
+        <Node id="app/Issues/Issues.xhtml" x="650" y="600" zoom="true"/>
+        <Node id="app/Components/Components.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="app/Components/Edit.xhtml" x="150" y="300" zoom="true"/>
+    </Scope>
+</Scene>

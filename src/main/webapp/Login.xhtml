@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/master.css"/>
+        <title>#{msg.login}</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.ico']}"/>
+    </h:head>
+    <h:body>
+        <h:form id="form" styleClass="centralized">
+            <f:event type="preRenderView" listener="#{userMBean.checkMessages}"/>
+            <p:graphicImage value="//resources//img//emptyHeaderLogo.png" />
+
+
+            <p:panel id="panel" header="#{msg.login}"  style="width: 50%; margin-left: 25%; margin-top: 10%" styleClass="centralized">
+                <p:messages/>
+                <h:panelGrid columns="3"  id="grid"  styleClass="centralized">
+
+                    <p:outputLabel for="username" value="#{msg.username}" />
+                    <p:inputText id="username" value="#{userMBean.login}" requiredMessage="#{msg.fieldmandatory}" required="true" size="32"/>
+                    <p:message for="username" />
+
+                    <p:outputLabel for="password"  value="#{msg.password}" />
+                    <p:password id="password" value="#{userMBean.password}" requiredMessage="#{msg.fieldmandatory}" required="true" size="32"/>
+                    <p:message for="password" />
+
+                    <p:outputLabel for="newpassword"  value="#{msg.newpassword}" rendered="#{userMBean.user.resetPwd}"/>
+                    <p:password id="newpassword" value="#{userMBean.newpassword}" requiredMessage="#{msg.fieldmandatory}" required="true" size="32" rendered="#{userMBean.user.resetPwd}"/>
+                    <p:message for="newpassword" />
+
+                    <p:outputLabel for="repeatnewpassword"  value="#{msg.repeatpassword}" rendered="#{userMBean.user.resetPwd}"/>
+                    <p:password id="repeatnewpassword" value="#{userMBean.repeatpassword}" requiredMessage="#{msg.fieldmandatory}" required="true" size="32" rendered="#{userMBean.user.resetPwd}"/>
+                    <p:message for="repeatnewpassword" />
+
+                </h:panelGrid>
+                <center>
+                    <h:panelGrid columns="1" styleClass="centralized">
+                        <h:panelGroup>
+                            <p:commandButton id="submitButton" value="#{msg.login}" action="#{userMBean.loginAction}" update="grid" ajax="false"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </center>
+            </p:panel>
+        </h:form>
+    </h:body>
+</html>

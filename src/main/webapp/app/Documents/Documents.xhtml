@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="./../../Templates/IssueTemplate.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="item" value="#{documentsMBean.item}" converter="ItemConverter"/>
+            <f:viewAction action="#{documentsMBean.setViewParams()}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="title">
+        #{msg.documents}
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form">
+
+            <h1>#{msg.documents}</h1>
+            <p:panel id="panel" collapsed="false" toggleable="true" header="#{msg.search}" widgetVar="panel">
+                <p:messages/>
+                <h:panelGrid columns="2"  id="grid"  style="font-size: small">
+                    <p:outputLabel for="fileName" value="#{msg.filename}" />
+                    <p:inputText id="fileName" value="#{documentsMBean.fileName}" size="60" maxlength="40"/>
+
+                    <p:outputLabel for="item" value="#{msg.itemreference}"/>
+                    <p:autoComplete id="item" completeMethod="#{documentsMBean.complete}" forceSelection="true"
+                                    maxResults="10"
+                                    multiple="false" var="item" value="#{documentsMBean.item}"
+                                    itemLabel="#{item.referenceNumber}" itemValue="#{item}" converter="ItemConverter">
+                        <p:column>
+                            #{item.referenceNumber}
+                        </p:column>
+                    </p:autoComplete>
+                    <p:tooltip for="item" hideEvent="blur" showEvent="focus"  />
+                    <p:message for="item"  />
+
+                    <p:outputLabel for="type" value="#{msg.type}" />
+                    <p:selectOneMenu id="type" value="#{documentsMBean.type}">
+                        <f:selectItem itemLabel="#{msg.report}" itemValue="report" />
+                        <f:selectItem itemLabel="#{msg.document}" itemValue="document"/>
+                        <p:ajax event="change" update="reportStatus" listener="#{documentsMBean.typeChange()}"/>
+                    </p:selectOneMenu>
+
+
+                    <p:outputLabel for="from" value="#{msg.from}" />
+                    <p:calendar id="from"
+                                timeZone=""
+                                navigator="true" size="10" pattern="dd.MM.yyyy"
+                                value="#{documentsMBean.createAfter}">
+                    </p:calendar>
+
+
+
+
+                    <p:outputLabel for="to" value="#{msg.to}" />
+                    <p:calendar id="to"
+                                timeZone=""
+                                navigator="true" size="10" pattern="dd.MM.yyyy"
+                                value="#{documentsMBean.createBefore}">
+                    </p:calendar>
+
+
+                    <p:outputLabel for="reportStatus" value="#{msg.reportstatus}" />
+                    <p:selectOneRadio id="reportStatus"  disabled="#{documentsMBean.reportStatusDisable}"
+                                      value="#{documentsMBean.reportStatus}" valueChangeListener="#{documentsMBean.typeChange()}">
+                        <f:selectItem itemLabel="#{msg.both}" itemValue="both" />
+                        <f:selectItem itemLabel="NOK" itemValue="nok" />
+                        <f:selectItem itemLabel="OK" itemValue="ok" />
+                    </p:selectOneRadio>
+                </h:panelGrid>
+                <h:panelGrid columns="2" >
+                    <h:panelGroup>
+                        <p:commandLink id="searchButton" action="#{documentsMBean.search()}" update=":tableForm:componentTable" process="panel" value="#{msg.search}" type="submit"/>
+                        <p:spacer width="20"/>
+                        <p:commandLink id="resetButton"  value="#{msg.reset}" update="panel :tableForm:componentTable" process="@this" type="button">
+                            <p:resetInput target="panel"/>
+                        </p:commandLink>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+        <h:form id="tableForm">
+            <p:dataTable  widgetVar="documentTable" id="componentTable"
+                          value="#{documentsMBean.dataModel}" var="fileFromModel" emptyMessage=""
+                          sortMode="single"
+                          styleClass="itemListTable"
+                          paginator="true" rows="50" paginatorAlwaysVisible="true" paginatorPosition="bottom" selection="#{documentsMBean.selectedFile}"
+                          selectionMode="single" rowKey="#{fileFromModel.id}" rowsPerPageTemplate="10,50,100">
+                <p:ajax event="rowSelect" update=":tableForm:display" onsuccess="fileDialog.show()" />
+                <f:facet name="header">
+                    <h:outputText value="#{msg.documents}" />
+                </f:facet>
+
+                <p:column  styleClass="rowText" headerText="#{msg.filename}">
+                    <p:tooltip for="name"/>
+                    <h:outputText id="name" value="#{fileFromModel.fileName}" title="#{fileFromModel.description}"/>
+                </p:column>
+                <p:column  styleClass="rowText" headerText="#{msg.status}" style="width: 30px" >
+                    <h:outputText id="status" value="#{fileFromModel.status}"/>
+                </p:column>
+                <p:column  styleClass="rowText" headerText="#{msg.date}" style="width: 30px">
+                    <h:outputText id="date" value="#{fileFromModel.createDate}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                    </h:outputText>
+                </p:column>
+                <p:column  styleClass="rowText" headerText="Created by" style="width: 30px">
+                    <h:outputText id="owner" value="#{fileFromModel.createBy.name} #{fileFromModel.createBy.surname}" />
+                </p:column>
+            </p:dataTable>
+            <p:dialog header="#{msg.fileoptions}" id="dlg" widgetVar="fileDialog" resizable="false"
+                      width="600" modal="true" position="top" draggable="false">
+
+                <h:panelGrid id="display" columns="2" cellpadding="4">
+
+                    <h:outputText value="#{msg.filename}:" />
+                    <h:outputText value="#{documentsMBean.selectedFile.fileName}" id="fileName"/>
+
+                    <h:outputText value="#{msg.type}:" />
+                    <h:outputText value="#{documentsMBean.selectedFile.docType}" id="type"/>
+
+                    <h:outputText value="#{msg.createdate}:" />
+                    <h:outputText value="#{documentsMBean.selectedFile.createDate}" id="createDate">
+                        <f:convertDateTime pattern="dd/MM/yyyy  HH:mm"/>
+                    </h:outputText>
+
+                    <h:outputText value="#{msg.createby}:" />
+                    <h:outputText value="#{documentsMBean.selectedFile.createBy.name} #{documentsMBean.selectedFile.createBy.surname}" id="createBy"/>
+
+                    <h:outputText value="#{msg.description}:" />
+                    <h:outputText value="#{documentsMBean.selectedFile.description}" id="description"/>
+                </h:panelGrid>
+                <p:commandButton icon="ui-icon-search" actionListener="#{documentsMBean.downloadFile}"
+                                 value="#{msg.download}" styleClass="tableButton" oncomplete="fileDialog.hide();$('.download').click();"/>
+                <p:commandButton icon="ui-icon-search"
+                                 value="#{msg.delete}" styleClass="tableButton" oncomplete="fileDialog.hide(); deleteDlg.show();"/>
+                <p:commandLink id="downloadLink" ajax="false" styleClass="download" style="visibility: hidden" >
+                    <p:fileDownload value="#{documentsMBean.streamedFileFile}"/>
+                </p:commandLink>
+            </p:dialog>
+            <p:confirmDialog closable="false"
+                             message="#{msg.deleteconfirmation} #{documentsMBean.selectedFile.fileName} ?"
+                             widgetVar="deleteDlg"
+                             width="600"
+                             header="#{msg.delete}">
+                <p:commandButton value="#{msg.yes}" action="#{documentsMBean.delete()}" ajax="false" immediate="true" styleClass="tableButton"/>
+                <p:commandButton value="#{msg.no}" onclick="deleteDlg.hide();" styleClass="tableButton"/>
+            </p:confirmDialog>
+        </h:form>
+        <!--<script>
+        //            function changeStatuses() {
+        //                $('span:contains("true")').text("OK");
+        //                $('span:contains("false")').text("NOK");
+        //                $('span:contains("NOK")').css('background', 'red').css('color', 'white');
+        //            }
+</script>-->
+    </ui:define>
+
+</ui:composition>

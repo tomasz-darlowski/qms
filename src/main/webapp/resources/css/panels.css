@@ -1,0 +1,9 @@
+.viewDetalPanel{
+    float: left;
+    width: 85%;
+    min-height: 250px;
+}
+.columnSize{
+    width: 25%;
+}
+

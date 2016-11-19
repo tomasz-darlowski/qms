@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <!-- INTERFACE -->
+    <cc:interface shortDescription="Dialog for upload files. !IMORTANT! Has form inside!">
+        <cc:attribute name="file" type="javax.servlet.http.Part" required="true"/>
+        <cc:attribute name="actionListener" method-signature="void listener()" required="true"/>
+        <cc:attribute name="widgetWar" type="java.lang.String" required="true"/>
+        <cc:attribute name="header" type="java.lang.String" required="true"/>
+        <cc:editableValueHolder name="file" targets="file" />
+    </cc:interface>
+
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <p:dialog modal="true" widgetVar="#{cc.attrs.widgetWar}"  appendToBody="true" header="#{cc.attrs.header}" width="600" resizable="false"
+                  closeOnEscape="true">
+            <h:form id="fileForm" enctype="multipart/form-data">
+                <h:inputFile required="true"  id="file" value="#{cc.attrs.file}" size="255" style="width: 100%" >
+                    <f:validator validatorId="imageValidator" for="file"/>
+                </h:inputFile>
+                <h:commandButton value="#{msg.upload}" action="#{cc.attrs.actionListener}"/>
+            </h:form>
+        </p:dialog>
+    </cc:implementation>
+</html>

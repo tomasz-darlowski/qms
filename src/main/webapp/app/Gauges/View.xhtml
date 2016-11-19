@@ -1,0 +1,111 @@
+<!--<?xml version='1.0' encoding='UTF-8' ?>-->
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms">
+
+    <ui:define name="title">
+        #{msg.view}
+    </ui:define>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="item" value="#{gauageMBean.gauage}" converter="gauageRefConverter"
+                         required="true" requiredMessage="Bad request. Please use a link from within the system."/>
+            <f:viewAction action="#{gauageMBean.reinit()}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="center">
+        <h:form id="form">
+            <p:menubar autoDisplay="false" styleClass="detailMenu" id="detailMenuBar">
+                <p:menuitem value="#{msg.edit}" icon="ui-icon-pencil" action="edit" immediate="true" ajax="false" styleClass="detailItem"/>
+                <p:submenu label="#{msg.opration}" icon="ui-icon-gear" styleClass="detailSubmenu">
+                    <p:menuitem id="uploadReport" value="#{msg.uploadreport}"  onclick="reportDlg.show();"/>
+                    <p:menuitem id="viewReport" value="#{msg.browsereports}"  ajax="false" action="reportBrowse"/>
+                    <p:separator />
+                    <p:menuitem id="deactivate" value="#{msg.inactivate}"  ajax="false" action="#{gauageMBean.deactivate()}" rendered="#{gauageMBean.gauage.active}"/>
+                    <p:menuitem id="activate" value="#{msg.activate}"  ajax="false" action="#{gauageMBean.activate()}" rendered="#{!gauageMBean.gauage.active}"/>
+                </p:submenu>
+                <p:menuitem value="#{msg.back}" outcome="gauges" immediate="true" ajax="false" styleClass="detailItem"/>
+            </p:menubar>
+
+            <p:panel id="detailPanel" styleClass="viewDetalPanel">
+                <p:messages/>
+                <h:outputText value="#{msg.notvalid}" style="background: RED; font-size: WHITE; " rendered="#{gauageMBean.gauage.validationDate==null}"/>
+                <p:graphicImage value="//resources//img//othericons//gauge.gif" style="float: left"/>
+                <h2 style="margin-top: 0">REF: #{gauageMBean.gauage.referenceNumber}</h2>
+
+                <h:panelGrid columns="2">
+                    <h:outputLabel  value="#{msg.lastvalidation}:"  />
+                    <h:outputText  value="#{gauageMBean.gauage.validationDate}" style="font-weight: bold">
+                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone=""/>
+                    </h:outputText>
+                    <h:outputLabel  value="#{msg.nextvalidation}:"  />
+                    <h:outputText value="#{gauageMBean.gauage.event.dateFrom}" style="font-weight: bold">
+                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone=""/>
+                    </h:outputText>
+                </h:panelGrid>
+                <p:separator/>
+                <h:panelGrid columns="2">
+                    <h:outputLabel  value="#{msg.referencedcomponents}:"  />
+                    <ui:repeat value="#{gauageMBean.gauage.relatedComponents}" var="comp" varStatus="loop">
+                        <h:commandLink value="#{comp.referenceNumber}" action="componentView" >
+                            <f:setPropertyActionListener value="#{comp.referenceNumber}" target="#{gauageMBean.selectedComponentReference}" />
+                        </h:commandLink>
+                        <h:outputText value="#{!loop.last ? ', ' :''}" />
+                    </ui:repeat>
+                </h:panelGrid>
+                <p:separator/>
+                <h:panelGrid columns="2" >
+                    <h:outputLabel value="#{msg.description}:" style="margin-right: 20px"/>
+                    <h:outputText value="#{gauageMBean.gauage.description}" style="white-space: pre-line"/>
+                </h:panelGrid>
+            </p:panel>
+
+            <p:panel id="utilPanel" >
+                <qms:ItemCommonTable createBy="#{gauageMBean.gauage.createBy.name} #{gauageMBean.gauage.createBy.surname}"
+                                     modifyBy="#{gauageMBean.gauage.modifyBy.name} #{gauageMBean.gauage.modifyBy.surname}"
+                                     createDate="#{gauageMBean.gauage.createDate}"
+                                     modifyDate="#{gauageMBean.gauage.modifyDate}"/>
+            </p:panel>
+            <p:panel header="#{msg.documents}" rendered="#{gauageMBean.docs.size() > 0}" toggleable="true" collapsed="true">
+                <qms:viewFileTable items="#{gauageMBean.docs}"/>
+            </p:panel>
+            <p:panel header="#{msg.images}" rendered="#{gauageMBean.images.size() > 0}" toggleable="true" collapsed="false">
+                <h3 style="margin-top: 0; "><h:outputText value="#{msg.images}" /></h3>
+                <p:lightBox id="viewPanel" styleClass="viewPanel">
+                    <ui:repeat value="#{gauageMBean.images}" var="image">
+                        <h:outputLink value="#{request.contextPath}/image?uid=#{image.uid}"  title="#{image.fileName}" onclick="removeLightBoxNav()">
+                            <p:graphicImage value="/thumb?uid=#{image.uid}"  title="#{image.fileName}" >
+                            </p:graphicImage>
+                        </h:outputLink>
+                        <p:spacer width="10" height="10"/>
+                    </ui:repeat>
+                </p:lightBox>
+            </p:panel>
+        </h:form>
+        <qms:DialogUploadDocs actionListener="#{gauageMBean.uploadReport()}" file="#{fileMBean.file}" header="#{msg.report}" widgetWar="reportDlg"
+                              validityRender="true" validity="#{fileMBean.reportStatus}"/>
+        <script>
+            function removeLightBoxNav() {
+                $(".ui-lightbox-nav-right").remove();
+                $(".ui-lightbox-nav-left").remove();
+            }
+
+            $(document).ready(function() {
+                var h = $("#form\\:detailPanel").height() + 1;
+                $("#form\\:utilPanel").height(h);
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                var h = $("#form\\:detailPanel").height() + 1;
+                $("#form\\:utilPanel").height(h);
+            });
+        </script>
+    </ui:define>
+
+</ui:composition>

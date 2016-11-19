@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Master.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ez="http://java.sun.com/jsf/composite/qms"
+                xmlns:poue="http://primefaces.org/ui/extensions"
+                xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms">
+
+    <ui:define name="title">
+        #{msg.components}
+    </ui:define>
+
+    <ui:define name="left">
+        <h:form>
+            <p:commandLink value="#{msg.addcomponent}" action="#{componentMainMBean.create()}" ajax="false" immediate="true" styleClass="menuLink" /><br/>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form" onkeypress="pressEnter()">
+            <h1 style="margin-top: 0">#{msg.components}</h1>
+
+
+            <p:panel id="panel" collapsed="false" toggleable="true" header="#{msg.search}" widgetVar="panel">
+                <p:messages/>
+                <h:panelGrid columns="2"  id="grid" columnClasses="columnSize" style="font-size: small">
+                    <p:outputLabel for="name" value="#{msg.name}" />
+                    <p:inputText id="name" value="#{componentMainMBean.name}"   size="60" maxlength="40"/>
+
+                    <p:outputLabel for="referenceNumber" value="#{msg.referencenumber}" />
+                    <p:inputText id="referenceNumber" value="#{componentMainMBean.refNumber}" size="60" maxlength="40"/>
+
+                    <p:outputLabel for="supplier" value="#{msg.supplier}" />
+                    <qms:supplierCombo value="#{componentMainMBean.supplier}" id="supplier"/>
+
+                    <p:outputLabel for="customer" value="#{msg.customer}" />
+                    <qms:CustomerCombo value="#{componentMainMBean.customer}" id="customer"/>
+
+                    <p:outputLabel for="options" value="#{msg.finalcomponent}" />
+                    <p:selectOneRadio id="options" value="#{componentMainMBean.partType}" >
+                        <f:selectItem itemLabel="#{msg.finalpart}" itemValue="final" />
+                        <f:selectItem itemLabel="#{msg.subpart}" itemValue="sub" />
+                        <f:selectItem itemLabel="#{msg.both}" itemValue="both" />
+                    </p:selectOneRadio>
+
+                    <p:outputLabel for="active" value="#{msg.active}" />
+                    <p:selectOneRadio id="active" value="#{componentMainMBean.activeStatus}">
+                        <f:selectItem itemLabel="#{msg.active}" itemValue="active" />
+                        <f:selectItem itemLabel="#{msg.inactive}" itemValue="inactive" />
+                        <f:selectItem itemLabel="#{msg.both}" itemValue="both" />
+                    </p:selectOneRadio>
+
+
+                </h:panelGrid>
+                <h:panelGrid columns="2" >
+                    <h:panelGroup>
+                        <p:commandLink id="searchButton" action="#{componentMainMBean.search()}" update=":tableForm:componentTable" process="panel" value="#{msg.search}" type="submit"/>
+                        <p:spacer width="20"/>
+                        <p:commandLink id="resetButton" actionListener="#{componentMainMBean.resetDefaultSearchVales()}" value="#{msg.reset}" update="panel :tableForm:componentTable" process="@this" type="button">
+                            <p:resetInput target="panel"/>
+                        </p:commandLink>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+        <h:form id="tableForm">
+            <p:dataTable  widgetVar="componentTable" id="componentTable"
+                          value="#{componentMainMBean.componentModel}" var="comp" emptyMessage=""
+                          sortMode="single"
+                          styleClass="itemListTable" rowStyleClass="#{comp.finalProduct ? 'finalComponentRow' : ''} #{comp.active ? '' : 'disactiveRow'}"
+                          paginator="true" rows="50" paginatorAlwaysVisible="true" paginatorPosition="bottom" selection="#{componentMainMBean.selectedComponent}"
+                          selectionMode="single" rowKey="#{comp.referenceNumber}" rowsPerPageTemplate="10,50,100">
+                <p:ajax event="rowSelect" update=":tableForm:display" oncomplete="componentDialog.show()" />
+                <f:facet name="header">
+                    <h:outputText value="#{msg.components}" />
+                </f:facet>
+
+                <p:column  styleClass="rowText" headerText="#{msg.name}">
+                    <h:outputText id="name" value="#{comp.name}" />
+                </p:column>
+
+                <p:column style="width:150px" styleClass="rowText" headerText="#{msg.referencenumber}">
+                    <h:outputText value="#{comp.referenceNumber}" />
+                </p:column>
+
+                <p:column headerText="#{msg.customer}" styleClass="rowText supplierTruncated">
+                    <h:outputText id="customer" value="#{comp.customer.name}" />
+                    <poue:tooltip for="customer" value="#{comp.customer.name}" atPosition="bottom left" />
+
+                </p:column>
+
+                <p:column headerText="#{msg.supplier}" styleClass="rowText supplierTruncated">
+                    <h:outputText id="supplier" value="#{comp.supplier.name}" />
+                    <poue:tooltip for="supplier" value="#{comp.supplier.name}" atPosition="bottom left" />
+
+                </p:column>
+
+
+
+            </p:dataTable>
+
+            <p:dialog header="#{msg.componentdetails}" widgetVar="componentDialog" resizable="false"
+                      width="600" modal="true" position="top" draggable="false" closeOnEscape="true">
+
+                <h:panelGrid id="display" columns="2" cellpadding="4">
+
+                    <h:outputText value="#{msg.name}:" />
+                    <h:outputText value="#{componentMainMBean.selectedComponent.name}" id="model"/>
+
+                    <h:outputText value="#{msg.referencenumber}:" />
+                    <h:outputText value="#{componentMainMBean.selectedComponent.referenceNumber}" id="year"/>
+                </h:panelGrid>
+                <p:commandButton action="view"  ajax="false" icon="ui-icon-search"
+                                 value="#{msg.view}" styleClass="tableButton" />
+                <p:commandButton action="edit"  ajax="false" icon="ui-icon-pencil"
+                                 value="#{msg.edit}" styleClass="tableButton" />
+            </p:dialog>
+        </h:form>
+        <script>
+            function pressEnter() {
+                if (event.keyCode == 13) {
+                    document.getElementById('form:searchButton').click();
+                    return false;
+                }
+            }
+        </script>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="item" value="#{issueMBean.issue}" converter="issueConverter"
+                         required="true" requiredMessage="Bad request. Please use a link from within the system."/>
+            <f:viewParam name="item" value="#{commentMBean.item}" converter="ItemIDConverter"/>
+            <f:viewAction action="#{issueMBean.reinit()}" />
+            <f:viewAction action="#{commentMBean.reinit()}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="title">
+        Issue - view
+    </ui:define>
+
+    <ui:define name="center">
+        <h:form id="form">
+
+            <p:menubar autoDisplay="false" styleClass="detailMenu" id="detailMenuBar">
+                <p:menuitem value="#{msg.edit}" icon="ui-icon-pencil" action="edit" immediate="true" ajax="false" styleClass="detailItem"/>
+                <p:submenu label="#{msg.issue}" icon="ui-icon-wrench" styleClass="detailSubmenu">
+                    <p:menuitem value="#{msg.assigne}"  oncomplete="assigneDialog.show();"/>
+                    <p:menuitem value="#{msg.link}" actionListener="#{issueMBean.resetDialogs()}" oncomplete="linkIssueDialog.show()"/>
+                </p:submenu>
+                <p:submenu label="#{msg.workflow}" icon="ui-icon-transferthick-e-w" styleClass="detailSubmenu">
+                    <p:menuitem value="#{msg.closeissue}" rendered="#{issueMBean.close}" action="#{issueMBean.changeStatus('Closed')}" ajax="false"/>
+                    <p:menuitem value="#{msg.rejectIssue}" rendered="#{issueMBean.reject}"  action="#{issueMBean.changeStatus('Rejected')}" ajax="false"/>
+                    <p:menuitem value="#{msg.reopeissue}" rendered="#{issueMBean.reopen}"  action="#{issueMBean.changeStatus('Reopened')}" ajax="false"/>
+                    <p:menuitem value="#{msg.startprogress}" rendered="#{issueMBean.start}"  action="#{issueMBean.changeStatus('In progress')}" ajax="false"/>
+                    <p:menuitem value="#{msg.resolveissue}" rendered="#{issueMBean.resolve}"  action="#{issueMBean.changeStatus('Resolved')}" ajax="false"/>
+                </p:submenu>
+                <p:menuitem value="#{msg.back}" outcome="issues" immediate="true" ajax="false" styleClass="detailItem"/>
+            </p:menubar>
+
+            <p:panel id="detailPanel" styleClass="viewDetalPanel">
+                <p:messages/>
+                <p:graphicImage value="//resources//img//issuetype48//#{issueMBean.issue.issueType}.gif" style="float: left"/>
+                <h2 style="margin-top: 0; margin-bottom: 0">#{issueMBean.issue.title}</h2>
+                <br/>
+                <h3 style="margin-top: 0;">#{msg.issueKey} - #{issueMBean.issue.issueNumber}</h3>
+                <p:separator/>
+                <qms:issueDetailViewTeble/>
+                <p:separator/>
+            </p:panel>
+
+            <p:panel id="utilPanel" >
+                <qms:ItemCommonTable createBy="#{issueMBean.issue.createBy.name} #{issueMBean.issue.createBy.surname}"
+                                     modifyBy="#{issueMBean.issue.modifyBy.name} #{issueMBean.issue.modifyBy.surname}"
+                                     resolveBy=""
+                                     createDate="#{issueMBean.issue.createDate}"
+                                     modifyDate="#{issueMBean.issue.modifyDate}"
+                                     resolveDate="#{issueMBean.issue.resolveDate}" renderResolve="true"/>
+            </p:panel>
+
+            <p:panel rendered="#{issueMBean.docs.size() > 0}" header="#{msg.documents}" toggleable="true" collapsed="true" >
+                <qms:viewFileTable items="#{issueMBean.docs}"/>
+            </p:panel>
+
+            <p:panel header="#{msg.images}" rendered="#{issueMBean.images.size() > 0}" toggleable="true" collapsed="false">
+                <p:lightBox id="viewPanel" styleClass="viewPanel" >
+                    <ui:repeat value="#{issueMBean.images}" var="image">
+                        <h:outputLink value="#{request.contextPath}/image?uid=#{image.uid}"  title="#{image.fileName}" onclick="removeLightBoxNav();">
+                            <p:graphicImage value="/thumb?uid=#{image.uid}"  title="#{image.fileName}" >
+                            </p:graphicImage>
+                        </h:outputLink>
+                        <p:spacer width="10" height="10"/>
+                    </ui:repeat>
+                </p:lightBox>
+            </p:panel>
+        </h:form>
+
+        <qms:DialogUploadDocs actionListener="#{issueMBean.uploadReport()}" file="#{fileMBean.file}" header="#{msg.report}" widgetWar="reportDlg"
+                              validityRender="true" validity="#{fileMBean.reportStatus}"/>
+
+        <p:dialog closeOnEscape="true" draggable="false" closable="true" header="#{msg.assigneto}" modal="true" resizable="false" widgetVar="assigneDialog">
+            <h:form>
+                <h:panelGrid>
+                    <qms:userListCombo value="#{issueMBean.issue.assigneTo}"/>
+                    <p:commandButton value="#{msg.assigne}" action="#{issueMBean.saveOnView}" ajax="false" styleClass="tableButton"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="linkIssueDlg" closeOnEscape="true" appendToBody="true" draggable="false" closable="true" header="#{msg.linkissue}" modal="true" resizable="false" widgetVar="linkIssueDialog">
+            <h:form>
+                <h:panelGrid>
+                    <p:autoComplete id="issue" completeMethod="#{issueMBean.completeIssue}"
+                                    maxResults="10" immediate="false"
+                                    multiple="false" var="iss" value="#{issueMBean.selectedLinkIssue}"
+                                    itemLabel="#{iss.id} #{iss.title}" itemValue="#{iss}" converter="issueConverter"
+                                    styleClass="detailText" >
+                        <p:column >
+                            <h:outputText value="#{iss.id} #{iss.title}" />
+                        </p:column>
+                    </p:autoComplete>
+                    <p:commandButton value="#{msg.assigne}" action="#{issueMBean.saveOnView}" ajax="false" styleClass="tableButton"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <style>
+            .ui-inputfield{
+                width: 600px !important;
+            }
+        </style>
+
+        <script>
+            function removeLightBoxNav() {
+                $(".ui-lightbox-nav-right").remove();
+                $(".ui-lightbox-nav-left").remove();
+            }
+
+            $(document).ready(function() {
+                var h = $("#form\\:detailPanel").height() + 1;
+                $("#form\\:utilPanel").height(h);
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                var h = $("#form\\:detailPanel").height() + 1;
+                $("#form\\:utilPanel").height(h);
+            });
+        </script>
+    </ui:define>
+
+    <ui:define name="bottom" >
+        <p:panel id="addCommentPanel" toggleTitle="#{msg.addcomment}" header="#{msg.comments}" rendered="#{commentMBean.commentList.size()>0}">
+            <ui:repeat value="#{commentMBean.commentList}" var="comment" varStatus="iterator" id="commentList">
+                <div id="comment#{iterator.index}">
+                    <div>
+                        <p:graphicImage value="//resources//img//othericons//avatar.gif"/><p:spacer width="7"/><h:outputText style="color: #045491; font-weight: 600" value="#{comment.creator.name} #{comment.creator.surname}"/> <h:outputText value=" #{msg.addacomment} "/>
+                        <h:outputText value="#{comment.createDate}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                        </h:outputText>
+                    </div>
+                    <div>
+                        <h:form rendered="#{iterator.last}">
+                            <p:commandButton icon="ui-icon-trash" style="font-size: 8px" oncomplete="deleteCommentDlg.show();" />
+                        </h:form>
+                    </div>
+                    <div style="margin-top: 15px">
+                        <h:outputText value="#{comment.content}." style="white-space: pre-line"/>
+                    </div>
+                </div>
+                <p:separator/>
+            </ui:repeat>
+        </p:panel>
+
+        <p:panel rendered="#{issueMBean.close}">
+            <h:form id="addForm">
+                <h:panelGrid columns="2">
+                    <p:inputTextarea id="content" cols="80" maxlength="250" value="#{commentMBean.comment.content}">
+                        <f:validator validatorId="commentValidator" for="content"/>
+                    </p:inputTextarea>
+                    <p:message for="content" id="msg"/>
+                    <p:commandButton value="#{msg.addcomment}" styleClass="tableButton" action="#{commentMBean.addComment()}"
+                                     oncomplete="$('html, body').animate({scrollTop: $('#addCommentPanel').offset().top
+                                     }, 600);" ajax="false"/>
+                </h:panelGrid>
+            </h:form>
+        </p:panel>
+
+        <h:form>
+            <p:confirmDialog closable="false"
+                             message="#{msg.deletequestion}?"
+                             widgetVar="deleteCommentDlg"
+                             width="600"
+                             header="#{msg.confirm}"
+                             closeOnEscape="true"
+                             appendToBody="false"
+                             style="top: 0px !important;">
+                <p:commandButton value="Yes" action="#{commentMBean.deleteComment}" ajax="false"
+                                 onclick="deleteCommentDlg.hide()" styleClass="tableButton"/>
+                <p:commandButton value="No" onclick="deleteCommentDlg.hide()" styleClass="tableButton"/>
+            </p:confirmDialog>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

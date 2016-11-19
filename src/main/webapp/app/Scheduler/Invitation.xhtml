@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms"
+                xmlns:poue="http://primefaces.org/ui/extensions"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="metadata">
+
+    </ui:define>
+
+    <ui:define name="title">
+        Invitation
+    </ui:define>
+
+
+    <ui:define name="center">
+        <h:form>
+            <p:menubar autoDisplay="false" styleClass="detailMenu" id="detailMenuBar">
+                <p:submenu label="#{msg.opration}" icon="ui-icon-gear" styleClass="detailSubmenu">
+                    <p:menuitem id="sendBtn" value="#{msg.send}"  ajax="false" async="true" action="#{invitationMBean.sendInvitations()}" />
+                </p:submenu>
+                <p:menuitem value="#{msg.back}" outcome="scheduler" immediate="true" ajax="false" styleClass="detailItem"/>
+            </p:menubar>
+        </h:form>
+        <p:panel id="panel">
+            <h2 style="margin-top: 0">#{msg.sendinvitation}</h2>
+            <h:panelGrid columns="2">
+                <h:outputLabel value="#{msg.from}"  styleClass="detailLabel"/>
+                <h:outputText id="from" value="#{schedulerMBean.schedulerModel.event.dateFrom}" styleClass="detailText">
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone=""/>
+                </h:outputText>
+
+                <h:outputLabel value="#{msg.to}"  styleClass="detailLabel"/>
+                <h:outputText id="to" value="#{schedulerMBean.schedulerModel.event.dateTo}" styleClass="detailText">
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone=""/>
+                </h:outputText>
+
+            </h:panelGrid>
+            <p:separator/>
+
+        </p:panel>
+        <h:form id="form">
+            <p:commandButton id="btn_add" value="#{msg.addhearing}" onclick="invitationDlg.show();" styleClass="tableButton"/>
+            <p:separator/>
+            <c:forEach items="#{invitationMBean.invitation}" var="inv">
+
+                <div><h:outputLabel value="#{msg.hearing}: " styleClass="detailLabel"/><h:outputText value="#{inv.user.name} #{inv.user.surname}" styleClass="detailText"/></div>
+                <div><h:outputLabel value="#{msg.note}: " styleClass="detailLabel"/><h:outputText value="#{inv.note}" escape="false" styleClass="detailText"/></div>
+                <p:commandButton value="#{msg.removehearing}" action="#{invitationMBean.removeInvitation()}" ajax="false" style="font-size: 10px">
+                    <f:setPropertyActionListener value="#{inv}" target="#{invitationMBean.inv}"/>
+                </p:commandButton>
+                <p:separator/>
+            </c:forEach>
+        </h:form>
+        <p:dialog id="d" appendToBody="true" closable="true" modal="true" widgetVar="invitationDlg" header="#{msg.addhearing}" resizable="false" width="600">
+            <h:form id="dForm">
+                <p:panel style="width: 100%">
+                    <h:panelGrid style="width: 100%">
+                        <qms:userListCombo value="#{invitationMBean.inv.user}" items="#{invitationMBean.allUsers}"/>
+                        <p:inputTextarea id="text" value="#{invitationMBean.inv.note}" maxlength="255" autoResize="false" styleClass="invitationTextArea detailText"/>
+                        <p:commandButton value="#{msg.save}" action="#{invitationMBean.addInvitation()}" ajax="false" oncomplete="invitationDlg.hide();" />
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

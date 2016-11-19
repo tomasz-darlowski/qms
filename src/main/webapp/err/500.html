@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><link type="text/css" rel="stylesheet" href="/QMSystem/faces/javax.faces.resource/theme.css?ln=primefaces-smoothness" /><link type="text/css" rel="stylesheet" href="/QMSystem/faces/javax.faces.resource/primefaces.css?ln=primefaces" /><script type="text/javascript" src="/QMSystem/faces/javax.faces.resource/jquery/jquery.js?ln=primefaces"></script><script type="text/javascript" src="/QMSystem/faces/javax.faces.resource/primefaces.js?ln=primefaces"></script>
+        <link type="text/css" rel="stylesheet" href="/QMSystem/resources/css/master.css" />
+        <link type="text/css" rel="stylesheet" href="/QMSystem/resources/css/error.css" />
+        <title>Login</title>
+        <link rel="shortcut icon" type="image/x-icon" href="/QMSystem/faces/javax.faces.resource/img/favicon.ico" />
+    </head>
+    <body>
+        <form id="form" name="form" method="post" action="/QMSystem/faces/err/AccessDenied.xhtml" class="centralized" enctype="application/x-www-form-urlencoded">
+            <input type="hidden" name="form" value="form" />
+            <img id="form:j_idt5" src="/QMSystem//resources//img//emptyHeaderLogo.png" alt="" />
+            <div id="form:panel" class="ui-panel ui-widget ui-widget-content ui-corner-all centralized" style="width: 50%; margin-left: 25%; margin-top: 10%">
+                <div id="form:panel_header" class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
+                    <span class="ui-panel-title">
+                        Error notification
+                    </span>
+                </div>
+                <div id="form:panel_content" class="ui-panel-content ui-widget-content">
+                    ERROR 500: Internal server exception
+                </div>
+
+            </div>
+            <script id="form:panel_s" type="text/javascript">
+                PrimeFaces.cw('Panel', 'widget_form_panel', {id: 'form:panel'});
+            </script>
+        </form>
+    </body>
+</html>

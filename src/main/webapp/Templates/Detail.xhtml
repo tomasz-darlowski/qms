@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms">
+
+    <f:view locale="#{userMBean.user.locale}">
+        <ui:insert name="metadata"/>
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <h:outputStylesheet name="css/cssLayout.css"/>
+            <h:outputStylesheet name="css/master.css"/>
+            <h:outputStylesheet name="css/header.css"/>
+            <h:outputStylesheet name="css/tables.css"/>
+            <h:outputStylesheet name="css/fields.css"/>
+            <h:outputStylesheet name="css/panels.css"/>
+            <title>QMS - <ui:insert name="title">title</ui:insert></title>
+            <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.ico']}"/>
+        </h:head>
+
+        <h:body>
+            <div id="top">
+                <ui:insert name="north">
+                    <ui:include src="/Templates/StaticContent/Header.xhtml" />
+                    <p:separator id="separator"/>
+                </ui:insert>
+            </div>
+            <div id="content" class="content">
+                <ui:insert name="center">Content</ui:insert>
+            </div>
+            <div id="bottom">
+                <p:separator id="bottomSeparator"/>
+
+                <ui:insert name="bottom"><center>#{msg.footerText}</center></ui:insert>
+
+            </div>
+        </h:body>
+    </f:view>
+</html>

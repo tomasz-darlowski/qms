@@ -1,0 +1,1 @@
+INSERT INTO appuser(id, email, login, name, password, surname, locale, admin) VALUES (nextval('qms_seq'),'terafim@tlen.pl', 'user1', 'Pawe³', '9003d1df22eb4d3820015070385194c8', 'Olczyk', 'pl', true);

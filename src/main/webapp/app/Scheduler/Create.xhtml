@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms">
+
+    <ui:define name="title">
+        #{msg.create}
+    </ui:define>
+    <ui:define name="center">
+        <h:form id="eventForm">
+
+            <f:event type="postValidate" listener="#{schedulerMBean.eventValidationService.datesValidator}" />
+            <qms:MenuDetailView backNavigationString="#{schedulerMBean.goBack()}"
+                                attachSubMenuRender="false"
+                                persistAction="#{schedulerMBean.persistEvent}"
+                                deleteActionRender="false"/>
+            <p:panel>
+                <p:messages />
+                <h:panelGrid columns="3">
+                    <p:outputLabel for="eventtitle" value="#{msg.title}" styleClass="detailLabel"/>
+                    <p:inputText id="eventtitle" value="#{schedulerMBean.schedulerModel.event.title}"
+                                 requiredMessage="#{msg.fieldmandatory}" required="true"
+                                 size="65" maxlength="60" autocomplete="off" styleClass="detailText">
+                    </p:inputText>
+                    <p:message for="eventtitle" />
+
+                    <p:outputLabel for="description" value="#{msg.description}" styleClass="detailLabel"/>
+                    <p:inputTextarea rows="14" value="#{schedulerMBean.schedulerModel.event.desciption}" id="description" styleClass="textArea detailText"
+                                     autoResize="false"/>
+                    <p:message for="description" />
+
+                    <p:outputLabel for="from" value="#{msg.from}" styleClass="detailLabel"/>
+                    <p:calendar id="from" value="#{schedulerMBean.schedulerModel.event.dateFrom}"
+                                timeZone="#{userMBean.user.locale}"
+                                requiredMessage="#{msg.fieldmandatory}" required="true" navigator="true" size="16" pattern="dd.MM.yyyy HH:mm">
+                    </p:calendar>
+                    <p:message for="from" />
+
+                    <p:outputLabel for="to" value="#{msg.to}" styleClass="detailLabel"/>
+                    <p:calendar id="to" value="#{schedulerMBean.schedulerModel.event.dateTo}"
+                                timeZone="#{userMBean.user.locale}" validatorMessage="#{msg.wrongdate}"
+                                requiredMessage="#{msg.fieldmandatory}" required="true" navigator="true" size="16" pattern="dd.MM.yyyy HH:mm">
+                    </p:calendar>
+                    <p:message for="to" />
+
+                    <p:outputLabel for="allDay" value="#{msg.alldayevent}?" styleClass="detailLabel"/>
+                    <p:selectBooleanCheckbox id="allDay" value="#{schedulerMBean.schedulerModel.event.allDay}" widgetVar="checkbox" >
+                    </p:selectBooleanCheckbox>
+                    <p:message for="allDay" />
+
+                    <p:outputLabel for="severity" value="#{msg.priority}" styleClass="detailLabel"/>
+                    <qms:SeverityComboBox id="severity" value="#{schedulerMBean.schedulerModel.event.styleClass}"/>
+                    <p:message for="severity" />
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,77 @@
+.rowText{
+    font-size: 0.8em !important;
+}
+
+.tableButton{
+    font-size: 10px !important;
+}
+
+/*.itemListTable > .ui-widget-header{
+    background: #057D9F !important;
+    color: white !important;
+}*/
+
+/*.itemListTable >  tr{
+    background: red !important;
+    color: white !important;
+}*/
+//finalny komponent
+.finalComponentRow{
+    font-weight: 600 !important;
+}
+//nieaktywny item kolor czcionki
+.disactiveRow{
+    color: #bbbbbb;
+}
+
+.ui-widget-content .ui-datatable-odd{
+    background: #ddf1ff;
+}
+
+.ui-widget-content .ui-datatable-even:hover{
+    background: #FF8100 !important;
+}
+
+.ui-widget-content .ui-datatable-odd:hover{
+    background: #FF8100 !important;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    background: #FF8100 !important;
+    border: black !important;
+    color: black !important;
+}
+
+.supplierTruncated{
+    width: 150px;
+    max-width: 150px;
+}
+
+.refCompTruncated{
+    width: 200px;
+    max-width: 200px;
+}
+
+.ui-widget-content > .supplierTruncated{
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100px;
+    vertical-align: bottom;
+}
+
+.ui-widget-content > .refCompTruncated{
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100px;
+    vertical-align: bottom;
+}
+
+.issueDetailTableTD{
+    padding-left: 20px
+}
+
+

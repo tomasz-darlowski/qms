@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/IssueTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{msg.dashboard}
+    </ui:define>
+
+    <ui:define name="content">
+        <h2><h:outputText value="Total issues : #{dashboardMBean.totalIssues}"/></h2>
+        <center>
+            <h:panelGrid columns="3">
+
+                <p:barChart  value="#{dashboardMBean.priorityChartModel}" style="height: 300px; width: 300px;"
+                             title="#{msg.issuesByPriority}" orientation="vertical" min="0"   breakOnNull="true" showDatatip="true" shadow="false"
+                             extender="ext" seriesColors="057D9F, FF8100" yaxisLabel="" legendPosition="ne"/>
+
+                <p:barChart  value="#{dashboardMBean.statusChartModel}" style="height: 300px; width: 600px;"
+                             title="#{msg.issuesByStatus}" orientation="vertical" min="0"   breakOnNull="true" showDatatip="true" shadow="false"
+                             extender="ext" seriesColors="057D9F, FF8100" yaxisAngle="60"/>
+
+                <p:barChart  value="#{dashboardMBean.typeChartModel}" style="height: 300px; width: 300px;" barMargin="15" barPadding="15"
+                             title="#{msg.issuesByType}" orientation="vertical" min="0"   breakOnNull="true" showDatatip="true" shadow="false"
+                             extender="ext" seriesColors="057D9F, FF8100" legendPosition="ne"/>
+            </h:panelGrid>
+        </center>
+        <h3>
+            #{msg.recentIssues}
+        </h3>
+        <p:dataList  widgetVar="issueTable" id="issueTable"
+                     value="#{dashboardMBean.recentIssues}" var="issue" >
+            <p:column headerText="#{msg.issuepriorityshortcut}" width="2%">
+                <p:graphicImage value="//resources//img//issuepriority//#{issue.issuePriority}.gif"/>
+            </p:column>
+            <p:spacer width="10"/>
+            <p:column headerText="#{msg.createdate}" style="white-space: normal;" width="2%">
+                <h:outputText value="#{issue.createDate}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                </h:outputText>
+            </p:column>
+            <p:spacer width="10"/>
+            <p:column headerText="#{msg.typeShortcut}" width="2%">
+                <p:graphicImage value="//resources//img//issuetype//#{issue.issueType}.gif"/>
+            </p:column>
+            <p:spacer width="10"/>
+            <p:column headerText="#{msg.key}" width="2%" >
+                #{msg.issueKey} - #{issue.issueNumber}
+            </p:column>
+            <p:spacer width="10"/>
+            <p:column headerText="#{msg.status}" width="2%" >
+                <p:graphicImage value="//resources//img//issuestatus//#{issue.issueStatus}.gif"/>
+            </p:column>
+            <p:spacer width="10"/>
+            <p:column headerText="#{msg.title}" style=" white-space: normal;">
+                <h:outputText value="#{issue.title}" style="font-weight: bolder"/>
+            </p:column>
+        </p:dataList>
+
+        <h3>
+            #{msg.upcomingMeeting}
+        </h3>
+        <p:dataList  widgetVar="eventTable" id="eventTable"
+                     value="#{dashboardMBean.upcomingEvents}" var="event" >
+            <p:column headerText="#{msg.status}" width="2%" >
+                <p:graphicImage value="//resources//img//eventPriority//#{event.styleClass}.gif"/>
+            </p:column>
+            <p:spacer width="10"/>
+            <p:column headerText="#{msg.createdate}" style="white-space: normal;" width="2%">
+                <h:outputText value="#{event.dateFrom}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                </h:outputText>
+            </p:column>
+            <p:spacer width="10"/>
+            <p:column headerText="#{msg.title}" style=" white-space: normal;">
+                <h:outputText value="#{event.title}" style="font-weight: bolder"/>
+            </p:column>
+        </p:dataList>
+
+
+
+
+        <script>
+            function ext() {
+
+                this.cfg.axes.xaxis.tickOptions = {
+                    formatString: '%d'
+                };
+                this.cfg.axes.yaxis.tickOptions = {
+                    formatString: '%d'
+                };
+                this.cfg.highlighter = {
+                    useAxesFormatters: true,
+                    tooltipAxes: 'y'
+                }
+
+            }
+        </script>
+        <style>
+            .Low{
+                color: #F54D0C;
+            }
+            .Medium{
+                color: #00ADFF;
+            }
+            .High{
+                color: #00F03A;
+            }
+        </style>
+    </ui:define>
+
+
+</ui:composition>

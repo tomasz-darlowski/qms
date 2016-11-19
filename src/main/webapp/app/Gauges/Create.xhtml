@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{msg.create}
+    </ui:define>
+
+    <ui:define name="center">
+        <h:form id="form">
+            <qms:MenuDetailView persistAction="#{gauageMBean.createAndClose()}"
+                                persistActionRender="true"
+                                persistAndEditAction="#{gauageMBean.createAndEdit()}"
+                                persistAndEditActionRender="true"
+                                deleteActionRender="false"
+                                attachSubMenuRender="false"
+                                backNavigationString="gauges"/>
+            <p:panel>
+                <h:panelGrid columns="3" >
+
+                    <p:outputLabel for="refnumber" value="#{msg.referencenumber}:" styleClass="detailLabel"/>
+                    <p:inputText id="refnumber" value="#{gauageMBean.gauage.referenceNumber}" requiredMessage="#{msg.fieldmandatory}"
+                                 required="true" size="20" maxlength="8" styleClass="detailText">
+                        <f:validator validatorId="CheckIfGaugeRefExistCreate" />
+                    </p:inputText>
+                    <p:message for="refnumber" />
+
+                    <p:outputLabel for="date" value="#{msg.validationdate}:" styleClass="detailLabel"/>
+                    <p:calendar id="date" value="#{gauageMBean.gauage.validationDate}"
+                                requiredMessage="#{msg.fieldmandatory}" required="true" navigator="true" size="12"
+                                pattern="dd/MM/yyyy" timeZone="" styleClass="detailText">
+                    </p:calendar>
+                    <p:message for="date" />
+
+                    <p:outputLabel for="period" value="#{msg.period}:" styleClass="detailLabel"/>
+                    <p:spinner id="period" value="#{gauageMBean.gauage.validationPeriod}" min="1" max="60" size="2" required="true" styleClass="detailText"
+                               validatorMessage="#{text['gauges.detail.validationperiod.error']}">
+                        <f:validateLongRange minimum="1" maximum="60"/>
+                    </p:spinner>
+                    <p:message for="period" />
+
+                    <p:outputLabel for="refcomponents" value="#{msg.referencedcomponents}:" styleClass="detailLabel"/>
+                    <p:autoComplete id="refcomponents" value="#{gauageMBean.gauage.relatedComponents}"
+                                    completeMethod="#{gauageMBean.complete}" multiple="true" var="comp"
+                                    itemLabel="#{comp.referenceNumber}" itemValue="#{comp}" converter="componentConverter"
+                                    styleClass="detailText"
+                                    required="false" style="width: 800px !important">
+                        <p:column>
+                            #{comp.referenceNumber} - #{comp.name}
+                        </p:column>
+                    </p:autoComplete>
+                    <p:message for="refcomponents" />
+
+                    <p:outputLabel for="active" value="#{msg.active}?" styleClass="detailLabel"/>
+                    <p:selectBooleanCheckbox value="#{gauageMBean.gauage.active}" id="active" styleClass="detailText"/>
+                    <p:message for="active" />
+
+                    <p:outputLabel for="description" value="#{msg.description}:" styleClass="detailLabel"/>
+                    <p:inputTextarea rows="14" value="#{gauageMBean.gauage.description}" id="description" styleClass="textArea detailText" autoResize="false" />
+                    <p:message for="description" />
+
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

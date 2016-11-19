@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="metadata">
+
+    </ui:define>
+
+    <ui:define name="title">
+        Create
+    </ui:define>
+
+    <ui:define name="center">
+        <h:form id="form">
+            <qms:MenuDetailView persistAction="#{issueMBean.createAndClose()}"
+                                persistActionRender="true"
+                                persistAndEditAction="#{issueMBean.createAndEdit()}"
+                                persistAndEditActionRender="true"
+                                deleteActionRender="false"
+                                attachSubMenuRender="false"
+                                backNavigationString="issues"/>
+            <p:panel>
+                <h:panelGrid columns="3" id="panel">
+
+                    <p:outputLabel for="issueType" value="#{msg.issuetype}" styleClass="detailLabel"/>
+                    <qms:issueTypeCombo value="#{issueMBean.issue.issueType}" id="issueType" anyChoose="false"/>
+                    <p:message for="issueType" />
+
+                    <p:outputLabel for="title" value="#{msg.title}" styleClass="detailLabel"/>
+                    <h:column>
+                        <h:panelGrid columns="2">
+                            <p:inputText id="title" size="60" value="#{issueMBean.issue.title}" title="Summary of issue" requiredMessage="#{msg.fieldmandatory}" required="true" styleClass="detailText"/>
+                            <p:message for="title" />
+                        </h:panelGrid>
+                    </h:column>
+                    <h:column/>
+
+                    <p:outputLabel for="issuePriority" value="#{msg.issuepriority}" styleClass="detailLabel"/>
+                    <qms:issuePriorityCombo value="#{issueMBean.issue.issuePriority}" id="issuePriority"/>
+                    <p:message for="issuePriority" />
+
+                    <p:outputLabel for="assigneTo" value="#{msg.assigneto}" styleClass="detailLabel"/>
+                    <qms:userListCombo value="#{issueMBean.issue.assigneTo}" id="assigneTo"/>
+                    <p:message for="assigneTo" />
+
+                    <p:outputLabel for="description" value="#{msg.description}" styleClass="detailLabel"/>
+                    <p:inputTextarea rows="14"  id="description" value="#{issueMBean.issue.description}" styleClass="textArea" autoResize="false" />
+                    <p:message for="description" />
+                </h:panelGrid>
+                <p:separator/>
+                <h:panelGrid columns="3">
+                    <p:outputLabel value="#{msg.labels}" for="label" styleClass="detailLabel"/>
+                    <h:column>
+                        <p:autoComplete id="label" completeMethod="#{issueMBean.completeLabel}"
+                                        maxResults="10" immediate="false"
+                                        multiple="true" var="label" value="#{issueMBean.issue.labels}"
+                                        itemLabel="#{label.label}" itemValue="#{label}" converter="LabelConverter"
+                                        styleClass="detailText">
+                            <p:column>
+                                #{label.label}
+                            </p:column>
+                        </p:autoComplete>
+                        <p:inputText rendered="true" id="newlabel" size="20" maxlength="20" value="#{labelMBean.strLabel}" styleClass="labelForm">
+                            <f:validator validatorId="CheckIfLabelExist"/>
+                            <p:watermark for="newlabel" value="#{msg.createnewlabel}"/>
+                        </p:inputText>
+                        <p:commandButton rendered="true"  id="add" value="#{msg.add}" process="newlabel @this" update="newlabel lblmsg"  action="#{labelMBean.addLabeltoDB}"
+                                         styleClass="labelForm"/>
+                        <h:message rendered="true"  for="newlabel" id="lblmsg" styleClass="labelForm"/>
+                    </h:column>
+                    <p:message for="label" />
+
+                    <p:outputLabel for="relyItems" value="#{msg.components}" styleClass="detailLabel"/>
+                    <p:autoComplete id="relyItems" completeMethod="#{issueMBean.complete}"
+                                    maxResults="10" immediate="false"
+                                    multiple="true" var="item" value="#{issueMBean.issue.items}"
+                                    itemLabel="#{item.referenceNumber} - #{item.name}" itemValue="#{item}" converter="componentConverter"
+                                    styleClass="detailText">
+                        <p:column>
+                            #{item.referenceNumber} - #{item.name}
+                        </p:column>
+                    </p:autoComplete>
+                    <p:message for="relyItems" />
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

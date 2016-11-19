@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="items" type="java.util.List" required="true"/>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <table>
+            <ui:repeat value="#{cc.attrs.items}" var="doc" varStatus="status"  >
+
+                <tr>
+                    <td>
+                        <h:outputText  value="#{status.index+1}." styleClass="detailText" title="#{doc.fileName}"/>
+                    </td>
+                    <td>
+                        <p:tooltip for="file"/>
+                        <p:commandLink id="file" value=" #{doc.fileName}" process="@this" oncomplete="$('.download').click()" 
+                                       styleClass="detailText" title="#{doc.description}">
+                            <f:setPropertyActionListener  target="#{fileMBean.fileEntity}" value="#{doc}" />
+                        </p:commandLink>
+                    </td>
+                    <td>
+                        <h:outputText value=" -"/>
+                        <h:outputText  value="#{doc.createDate}" styleClass="detailText" title="#{doc.fileName}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                        </h:outputText>
+                        <p:commandLink id="downloadLink" actionListener="#{fileMBean.downloadFile()}" ajax="false" styleClass="download" style="visibility: hidden" >
+                            <p:fileDownload value="#{fileMBean.downloadFile}"/>
+                        </p:commandLink>
+                    </td>
+                </tr>
+
+            </ui:repeat>
+        </table>
+    </cc:implementation>
+</html>

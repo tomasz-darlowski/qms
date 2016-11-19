@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Master.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <ui:define name="title">
+        #{msg.gauges}
+    </ui:define>
+
+    <ui:define name="left">
+        <h:form>
+            <p:commandLink value="#{msg.addgauge}" action="#{gauageMainMBean.create()}" ajax="false" immediate="true" styleClass="menuLink" /><br/>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form" onkeypress="pressEnter();">
+            <h1 style="margin-top: 0">#{msg.gauges}</h1>
+
+            <p:panel id="panel" collapsed="false" toggleable="true" header="#{msg.search}" widgetVar="panel">
+                <p:messages/>
+                <h:panelGrid columns="4"  id="grid"  columnClasses="columnSize" style="font-size: small">
+
+                    <p:outputLabel for="referenceNumber" value="#{msg.referencenumber}" />
+                    <p:inputText id="referenceNumber" value="#{gauageMainMBean.refNumber}"   size="16" maxlength="8"/>
+                    <p:tooltip for="referenceNumber" hideEvent="blur" showEvent="focus"/>
+                    <p:message for="referenceNumber" />
+
+                    <p:outputLabel for="after" value="#{msg.validateafter}" />
+                    <p:calendar id="after" value="#{gauageMainMBean.dateAfter}"
+                                timeZone=""
+                                navigator="true" size="12" pattern="dd.MM.yyyy">
+                    </p:calendar>
+                    <p:tooltip for="after" hideEvent="blur" showEvent="focus"/>
+                    <p:message for="after" />
+
+                    <p:outputLabel for="before" value="#{msg.validatebefore}" />
+                    <p:calendar id="before" value="#{gauageMainMBean.dateBefore}"
+                                timeZone=""
+                                navigator="true" size="12" pattern="dd.MM.yyyy">
+                    </p:calendar>
+                    <p:tooltip for="before" hideEvent="blur" showEvent="focus"/>
+                    <p:message for="before" />
+
+                    <p:outputLabel for="active" value="#{msg.active}" />
+                    <p:selectOneRadio id="active" value="#{gauageMainMBean.activeStatus}">
+                        <f:selectItem itemLabel="#{msg.active}" itemValue="active" />
+                        <f:selectItem itemLabel="#{msg.inactive}" itemValue="inactive" />
+                        <f:selectItem itemLabel="#{msg.both}" itemValue="both" />
+                    </p:selectOneRadio>
+                    <p:spacer/>
+                    <p:spacer/>
+
+                    <p:outputLabel for="valid" value="#{msg.valid}" />
+                    <p:selectOneRadio id="valid" value="#{gauageMainMBean.validStatus}">
+                        <f:selectItem itemLabel="OK" itemValue="valid" />
+                        <f:selectItem itemLabel="NOK" itemValue="novalid" />
+                        <f:selectItem itemLabel="#{msg.both}" itemValue="both" />
+                    </p:selectOneRadio>
+
+                </h:panelGrid>
+                <h:panelGrid columns="2" id="gridCommand">
+                    <h:panelGroup>
+                        <p:commandLink id="searchButton" update=":tableForm:gauageTable" value="#{msg.search}" type="submit" actionListener="#{gauageMainMBean.search()}" oncomplete="changeStatuses()"/>
+                        <p:spacer width="20"/>
+                        <p:commandLink id="resetButton" value="#{msg.reset}" update="panel :tableForm:gauageTable" process="@this" action="#{gauageMainMBean.resetDefaultSearchVales()}" type="button">
+                            <p:resetInput target="panel"/>
+                        </p:commandLink>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+        <h:form id="tableForm">
+            <p:dataTable widgetVar="dataTable" id="gauageTable" value="#{gauageMainMBean.gauageDataModel}"
+                         var="gauage" emptyMessage=""
+                         sortMode="single" styleClass="itemListTable" paginator="true" rows="50"
+                         paginatorAlwaysVisible="true" paginatorPosition="bottom" selection="#{gauageMainMBean.selectedGauage}"
+                         selectionMode="single" rowKey="#{gauage.referenceNumber}" rowsPerPageTemplate="10,50,100">
+                <p:ajax event="rowSelect" update=":tableForm:display" oncomplete="gauageDialog.show()" />
+                <f:facet name="header">
+                    <h:outputText value="#{msg.gauges}" />
+                </f:facet>
+
+                <p:column style="width:5%; text-align: center;" sortBy="#{gauage.referenceNumber}" >
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.ref}" styleClass="rowText"/>
+                    </f:facet>
+                    <h:outputText value="#{gauage.referenceNumber}" styleClass="rowText"/>
+                </p:column>
+
+                <p:column style="width: 5%; text-align: center;" sortBy="#{gauage.event.dateFrom}" >
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.nextvalidationdate}" styleClass="rowText"/>
+                    </f:facet>
+                    <h:outputText value="#{gauage.event.dateFrom}" styleClass="rowText">
+                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone=""/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column style="width: 5%; text-align: center;" sortBy="#{gauage.validationPeriod}" >
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.period}" styleClass="rowText"/>
+                    </f:facet>
+                    <h:outputText value="#{gauage.validationPeriod}" styleClass="rowText"/>
+                </p:column>
+                <p:column style="width: 5%; text-align: center;" sortBy="#{gauage.validationPeriod}" >
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.status}" styleClass="rowText"/>
+                    </f:facet>
+                    <h:outputText value="#{gauage.validationDate!=null}" styleClass="rowText"/>
+                </p:column>
+
+                <p:column styleClass="refCompTruncated">
+                    <f:facet name="header" >
+                        <h:outputText value="#{msg.referencedcomponents}" styleClass="rowText"/>
+                    </f:facet>
+                    <ui:repeat value="#{gauage.relatedComponents}" var="comp" varStatus="loop">
+                        <h:outputText value="#{comp.referenceNumber}" styleClass="rowText"/>
+                        <h:outputText value="#{!loop.last ? ', ' :''}" styleClass="rowText"/>
+                    </ui:repeat>
+
+                </p:column>
+            </p:dataTable>
+            <p:dialog header="#{msg.gaugedetails}" widgetVar="gauageDialog" resizable="false"
+                      width="600" modal="true" position="top" closeOnEscape="true">
+
+                <h:panelGrid id="display" columns="2" cellpadding="4">
+                    <h:outputText value="#{msg.referencenumber}:" />
+                    <h:outputText value="#{gauageMainMBean.selectedGauage.referenceNumber}" id="year"/>
+                </h:panelGrid>
+                <p:commandButton action="view"  ajax="false" icon="ui-icon-search"
+                                 value="#{msg.view}" styleClass="tableButton" />
+                <p:commandButton action="edit"  ajax="false" icon="ui-icon-pencil"
+                                 value="#{msg.edit}" styleClass="tableButton" />
+            </p:dialog>
+        </h:form>
+        <script>
+            function pressEnter() {
+                if (event.keyCode == 13) {
+                    document.getElementById('form:searchButton').click();
+                    return false;
+                }
+            }
+        </script>
+        <script>
+            function changeStatuses() {
+                $('span:contains("true")').text("OK");
+                $('span:contains("false")').text("NOK");
+                $('span:contains("NOK")').css('background', 'red').css('color', 'white');
+            }
+        </script>
+    </ui:define>
+
+</ui:composition>

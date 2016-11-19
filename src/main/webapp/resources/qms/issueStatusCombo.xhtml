@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="value" required="true"/>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <p:selectManyCheckbox id="basic" value="#{cc.attrs.value}" layout="pageDirection" >
+            <f:selectItem itemLabel="#{msg.open}" itemValue="Open" />
+            <f:selectItem itemLabel="#{msg.reopen}" itemValue="Reopen" />
+            <f:selectItem itemLabel="#{msg.inprogress}" itemValue="In progress" />
+            <f:selectItem itemLabel="#{msg.closed}" itemValue="Closed" />
+        </p:selectManyCheckbox>
+    </cc:implementation>
+</html>

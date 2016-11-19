@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="items" type="java.util.List" required="true"/>
+        <cc:attribute name="selection"/>
+        <cc:attribute name="rowExpandRendered" default="true"/>
+        <cc:attribute name="delAction" method-signature="java.lang.String action()"/>
+        <cc:attribute name="header" type="java.lang.String"/>
+        <cc:attribute name="confDlgvar" type="java.lang.String" required="true"/>
+
+
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <p:dataTable style="text-align: left;" tableStyle="background: #ffb8c3; width: 100%; text-align: left; margin-bottom: 5px"
+                     emptyMessage="" var="file" value="#{cc.attrs.items}" >
+
+            <p:column headerText="#{cc.attrs.header}" style="text-align: left; width: 90%">
+                <h:outputText value="#{file.fileName}" styleClass="rowText"/>
+            </p:column>
+            <p:column headerText="#{msg.options}" styleClass="rowText">
+                <p:commandLink value="#{msg.delete}" process="@this" oncomplete="#{cc.attrs.confDlgvar}.show();">
+                    <f:setPropertyActionListener  target="#{cc.attrs.selection}" value="#{file}"/>
+                </p:commandLink>
+            </p:column>
+
+        </p:dataTable>
+        <qms:confirmDialog yesAction="#{cc.attrs.delAction}" widgetVar="#{cc.attrs.confDlgvar}"
+                           message="#{msg.deletequestion} #{file.fileName}?"/>
+        <p:separator/>
+    </cc:implementation>
+</html>

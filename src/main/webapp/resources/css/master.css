@@ -1,0 +1,138 @@
+body {
+    font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    font-size: 14px !important;
+    min-width:1200px !important;
+    max-width:1366px !important;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+/* size of label to set equal distances between each radio button*/
+.ui-selectmanycheckbox label, .ui-selectoneradio label{
+    min-width: 75px;
+}
+
+#form\:reportStatus label{
+    min-width: 35px;
+}
+
+.ui-message-info, .ui-message-warn, .ui-message-error, .ui-message-fatal {
+    background-color: #fdfdfd !important;
+    border-style: none !important;
+    font-size: 0.9em !important;
+}
+
+/* position of lightBox (images) */
+#form\:viewPanel_panel{
+    top: 10px !important;
+}
+
+
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error{
+    background: #fdfdfd !important;
+    color: black !important;
+}
+
+/*wyłączenie tabelki wokół walidowanego labela*/
+.ui-outputlabel.ui-state-error{
+    border: none !important;
+}
+/*wyłączenie zaokrągleń w całym themie*/
+.ui-corner-all, .ui-corner-top, .ui-corner-bottom, .ui-corner-left, .ui-corner-right{
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+
+.ui-autocomplete-multiple-container.ui-inputfield{
+    width: 650px !important;
+}
+
+.errors{
+    font-style: italic;
+    color: red;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 0.9em;
+}
+
+/*GROWL POSITION*/
+.ui-growl {
+    position: absolute;
+    top:40% !important;
+    left:20%;
+    width: 60% !important;;
+    z-index: 9999;
+}
+
+.ui-growl-message {
+    margin-left: 50px !important;
+    padding: 10px 10px 5px 0 !important;
+    width: 100% !important;
+    float: none !important;
+}
+
+/*growl style*/
+.ui-growl .ui-state-highlight{
+    background-image: none;
+    background-color: #FF8100;
+    opacity: 1 !important;
+}
+
+/*style linków*/
+.ui-commandlink {
+    font-size: 0.95em !important;
+    color: black !important;
+    font-weight : bold !important;
+    text-decoration: none !important;
+}
+/*styl linków po najechaniu*/
+.ui-commandlink:hover {
+    font-size: 0.95em !important;
+    color: black !important;
+    font-weight : bold !important;
+    text-decoration: underline !important;
+}
+
+.detailMenu{
+    background: #057D9F !important;
+    color: white;
+    font-weight: bolder;
+}
+
+.detailSubmenu > a > .ui-menuitem-text{
+    color: white !important;
+    font-weight: bolder !important;
+}
+
+.ui-menubar .ui-menuitem-link:hover{
+    background: #FF8100 !important;
+}
+
+.detailItem{
+    color: white !important;
+    font-weight: bolder !important;
+}
+
+.ui-menuitem-active{
+    background: #61b7cf !important;
+}
+
+.ui-dialog-titlebar{
+    background: #057D9F !important;
+    color: white !important;
+}
+
+.ui-widget-header{
+    background: #057D9F !important;
+    color: white !important;
+}
+
+.ui-widget-overlay{
+    background: black !important;
+    opacity: 0.60 !important;
+}
+
+.notvalidrow{
+    background: #ffb8c3 !important;
+}

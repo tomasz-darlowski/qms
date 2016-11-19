@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms">
+
+    <ui:define name="title">
+        #{msg.view}
+    </ui:define>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="item" value="#{componentMBean.component}" converter="componentConverter"
+                         required="true" requiredMessage="Bad request. Please use a link from within the system."/>
+            <f:viewAction action="#{componentMBean.reinit()}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="center">
+        <h:form id="form">
+            <p:menubar autoDisplay="false" styleClass="detailMenu" id="detailMenuBar">
+                <p:menuitem value="#{msg.edit}" icon="ui-icon-pencil" action="edit" immediate="true" ajax="false" styleClass="detailItem">
+                    <f:param name="from" value="view"/>
+                </p:menuitem>
+                <p:submenu label="#{msg.opration}" icon="ui-icon-gear" styleClass="detailSubmenu">
+                    <p:menuitem id="uploadReport" value="#{msg.uploadreport}"  onclick="reportDlg.show();"/>
+                    <p:menuitem id="viewReport" value="#{msg.browsereports}"  ajax="false" action="reportBrowse"/>
+                    <p:separator />
+                    <p:menuitem id="deactivate" value="#{msg.inactivate}"  ajax="false" action="#{componentMBean.deactivate()}" rendered="#{componentMBean.component.active}"/>
+                    <p:menuitem id="activate" value="#{msg.activate}"  ajax="false" action="#{componentMBean.activate()}" rendered="#{!componentMBean.component.active}"/>
+                </p:submenu>
+                <p:menuitem value="#{msg.back}" outcome="components" immediate="true" ajax="false" styleClass="detailItem"/>
+            </p:menubar>
+
+            <p:panel id="detailPanel" styleClass="viewDetalPanel">
+                <p:messages/>
+                <p:graphicImage value="//resources//img//othericons//components.gif" style="float: left"/>
+                <h2 style="margin-top: 0; margin-bottom: 0">#{componentMBean.component.name}</h2>
+                <br/>
+                <h3 style="margin-top: 0;">#{componentMBean.component.referenceNumber}</h3>
+                <h:panelGrid columns="2" >
+                    <h:outputLabel value="#{msg.supplier}:"  styleClass="detailLabel"/>
+                    <h:outputText value="#{componentMBean.component.supplier.name}" styleClass="detailText"/>
+
+                    <h:outputLabel value="#{msg.customer}:"  styleClass="detailLabel"/>
+                    <h:outputText value="#{componentMBean.component.customer.name}" styleClass="detailText"/>
+                    <h:outputLabel  value="#{!componentMBean.component.finalProduct ? msg.referencedcomponents : msg.componentparts}:"  rendered="#{componentMBean.component.relatedComponents.size()>0}" styleClass="detailLabel"/>
+                    <ui:repeat value="#{componentMBean.component.relatedComponents}" var="comp" varStatus="loop" rendered="#{componentMBean.component.relatedComponents.size()>0}">
+                        <h:commandLink value="#{comp.referenceNumber}" action="componentView" styleClass="detailText">
+                            <f:setPropertyActionListener value="#{comp.referenceNumber}" target="#{componentMBean.selectedComponentReference}" />
+                        </h:commandLink>
+                        <h:outputText value="#{!loop.last ? ', ' :''}" styleClass="detailText" rendered="#{componentMBean.gauges.size()>0}"/>
+                    </ui:repeat>
+                    <h:outputLabel value="#{msg.gauges}:"  styleClass="detailLabel"/>
+                    <ui:repeat value="#{componentMBean.gauges}" var="gauge" varStatus="loop" rendered="#{componentMBean.gauges.size()>0}">
+                        <h:commandLink value="#{gauge.referenceNumber}" action="gaugeView" styleClass="detailText">
+                            <f:setPropertyActionListener value="#{gauge.referenceNumber}" target="#{componentMBean.selectedGaugeReference}" />
+                        </h:commandLink>
+                        <h:outputText value="#{!loop.last ? ', ' :''}" styleClass="detailText"/>
+                    </ui:repeat>
+                    <p:separator/><p:separator/>
+                    <h:outputLabel value="#{msg.description}:" styleClass="detailLabel"/>
+                    <h:outputText value="#{componentMBean.component.description}" styleClass="detailText"/>
+                </h:panelGrid>
+            </p:panel>
+
+            <p:panel id="utilPanel" >
+                <qms:ItemCommonTable createBy="#{componentMBean.component.createBy.name} #{componentMBean.component.createBy.surname}"
+                                     modifyBy="#{componentMBean.component.modifyBy.name} #{componentMBean.component.modifyBy.surname}"
+                                     createDate="#{componentMBean.component.createDate}"
+                                     modifyDate="#{componentMBean.component.modifyDate}"/>
+            </p:panel>
+            <p:panel header="#{msg.issues}" rendered="#{componentMBean.component.issues.size()>0}" toggleable="true" collapsed="true">
+                <qms:viewIssues issList="#{componentMBean.component.issues}"/>
+            </p:panel>
+            <p:panel header="#{msg.documents}" rendered="#{componentMBean.docs.size() > 0}" toggleable="true" collapsed="true">
+                <qms:viewFileTable items="#{componentMBean.docs}"/>
+            </p:panel>
+
+
+            <p:panel rendered="#{componentMBean.images.size() > 0}" header="#{msg.images}" toggleable="true" collapsed="false">
+                <p:lightBox id="viewPanel" styleClass="viewPanel">
+                    <ui:repeat value="#{componentMBean.images}" var="image">
+                        <h:outputLink value="#{request.contextPath}/image?uid=#{image.uid}"  title="#{image.fileName}" onclick="removeLightBoxNav();">
+                            <p:graphicImage value="/thumb?uid=#{image.uid}"  title="#{image.fileName}" >
+                            </p:graphicImage>
+                        </h:outputLink>
+                        <p:spacer width="10" height="10"/>
+                    </ui:repeat>
+                </p:lightBox>
+
+            </p:panel>
+
+        </h:form>
+        <qms:DialogUploadDocs actionListener="#{componentMBean.uploadReport()}" file="#{fileMBean.file}" header="#{msg.report}" widgetWar="reportDlg"
+                              validityRender="true" validity="#{fileMBean.reportStatus}"/>
+
+        <script>
+            function removeLightBoxNav() {
+                $(".ui-lightbox-nav-right").remove();
+                $(".ui-lightbox-nav-left").remove();
+            }
+
+            $(document).ready(function() {
+                var h = $("#form\\:detailPanel").height() + 1;
+                $("#form\\:utilPanel").height(h);
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                var h = $("#form\\:detailPanel").height() + 1;
+                $("#form\\:utilPanel").height(h);
+            });
+        </script>
+
+    </ui:define>
+
+</ui:composition>

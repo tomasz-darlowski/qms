@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Master.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="metadata">
+
+    </ui:define>
+
+    <ui:define name="title">
+        #{msg.issues}
+    </ui:define>
+
+    <ui:define name="left">
+        <h:form>
+            <p:commandLink value="#{msg.createissue}" action="Create"  ajax="false" immediate="true" styleClass="menuLink" />
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+
+            <p:panel id="panel" collapsed="false" toggleable="true" header="#{msg.search}" widgetVar="panel">
+                <p:messages/>
+                <h:panelGrid columns="2" style="font-size: small" >
+                    <h:outputLabel value="#{msg.title}" />
+                    <p:inputText value="#{issueMainMBean.title}" size="80"/>
+                    <h:outputLabel value="#{msg.issuetype}"/>
+                    <p:selectOneMenu id="type" value="#{issueMainMBean.issueType}">
+                        <f:selectItem itemLabel="#{msg.any}" itemValue="any"/>
+                        <f:selectItem itemLabel="#{msg.bug}" itemValue="bug"/>
+                        <f:selectItem itemLabel="#{msg.task}" itemValue="task" />
+                        <f:selectItem itemLabel="#{msg.improvement}" itemValue="improvement"/>
+                    </p:selectOneMenu>
+                </h:panelGrid>
+                <h:panelGrid columns="5" style="font-size: small" >
+
+                    <h:outputLabel value="#{msg.issuestatus}"/>
+                    <qms:issueStatusCombo value="#{issueMainMBean.issueStatus}" />
+                    <p:spacer width="50"/>
+                    <h:outputLabel value="#{msg.issuepriority}"/>
+                    <qms:issuePriority value="#{issueMainMBean.issuePriority}" />
+                    <h:outputLabel value="#{msg.assigneto}"/>
+                    <qms:userListCombo value="#{issueMainMBean.assigneTo}" required="false"/>
+                    <p:spacer width="50"/>
+                    <h:outputLabel value="#{msg.createby}"/>
+                    <qms:userListCombo value="#{issueMainMBean.createBy}" required="false"/>
+                    <h:outputLabel value="#{msg.createafter}"/>
+                    <p:calendar value="#{issueMainMBean.createAfer}" timeZone="#{userMBean.user.locale}"
+                                navigator="true" size="12" pattern="dd.MM.yyyy"/>
+                    <p:spacer width="50"/>
+                    <h:outputLabel value="#{msg.createbefore}"/>
+                    <p:calendar value="#{issueMainMBean.createBefore}" timeZone="#{userMBean.user.locale}"
+                                navigator="true" size="12" pattern="dd.MM.yyyy"/>
+                    <h:outputLabel value="#{msg.label}"/>
+                    <p:autoComplete id="label" completeMethod="#{issueMBean.completeLabel}" forceSelection="true"
+                                    maxResults="10"
+                                    multiple="false" var="label" value="#{issueMainMBean.label}"
+                                    itemLabel="#{label.label}" itemValue="#{label}" converter="LabelConverter"
+                                    style="max-width: 40px !important">
+                        <p:column>
+                            #{label.label}
+                        </p:column>
+                    </p:autoComplete>
+                </h:panelGrid>
+                <p:separator/>
+                <p:commandLink value="#{msg.search}" style="font-size: 10px" type="submit" actionListener="#{issueMainMBean.search()}" update=":tableForm:issueTable"/>
+                <p:spacer width="20"/>
+                <p:commandLink id="resetButton"  value="#{msg.reset}" actionListener="#{issueMainMBean.resetSearchValues}" update="panel" process="@this" type="button">
+                    <p:resetInput target="panel"/>
+                </p:commandLink>
+            </p:panel>
+        </h:form>
+
+
+        <h:form id="tableForm">
+            <p:dataTable  widgetVar="issueTable" id="issueTable"
+                          value="#{issueMainMBean.issueDataModel}" var="issue" emptyMessage=""
+                          sortMode="single"
+                          styleClass="itemListTable"
+                          paginator="true" rows="10" paginatorAlwaysVisible="true" paginatorPosition="top" selection="#{issueMainMBean.selectedIssue}"
+                          selectionMode="single" rowKey="#{issue.id}" rowsPerPageTemplate="10,50,100" tableStyle="font-size: 0.8em;">
+                <p:ajax event="rowSelect" update=":dlgForm:display" oncomplete="issueDialog.show()" />
+                <f:facet name="header">
+                    <p:outputPanel >
+                        <h:outputText value="#{msg.issues}" />
+                    </p:outputPanel>
+                </f:facet>
+                <p:column headerText="#{msg.issuepriorityshortcut}" width="2%">
+                    <p:graphicImage value="//resources//img//issuepriority//#{issue.issuePriority}.gif"/>
+                </p:column>
+                <p:column headerText="#{msg.key}" width="2%" >
+                    #{msg.issueKey} - #{issue.issueNumber}
+                </p:column>
+                <p:column headerText="#{msg.status}" width="2%" >
+                    <p:graphicImage value="//resources//img//issuestatus//#{issue.issueStatus}.gif"/>#{issue.issueStatus}
+                </p:column>
+                <p:column headerText="#{msg.title}" style=" white-space: normal;">
+                    #{issue.title}
+                </p:column>
+                <p:column headerText="#{msg.createdate}" style="white-space: normal;" width="2%">
+                    <h:outputText value="#{issue.createDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msg.modifydate}" style="white-space: normal;" width="2%">
+                    <h:outputText value="#{issue.modifyDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msg.createby}" style="white-space: normal;" width="2%">
+                    #{issue.createBy.name} #{issue.createBy.surname}
+                </p:column>
+                <p:column headerText="#{msg.assigneto}" style="white-space: normal;" width="2%">
+                    #{issue.assigneTo.name} #{issue.assigneTo.surname}
+                </p:column>
+                <p:column headerText="#{msg.typeShortcut}" width="2%">
+                    <p:graphicImage value="//resources//img//issuetype//#{issue.issueType}.gif"/>
+                </p:column>
+            </p:dataTable>
+
+
+        </h:form>
+
+        <h:form id="dlgForm">
+            <p:dialog header="#{msg.issuedetails}" widgetVar="issueDialog" resizable="false"
+                      width="600" modal="true" position="top" draggable="false" closeOnEscape="true">
+
+                <h:panelGrid id="display" columns="2" cellpadding="4">
+                    <h:outputText value="#{msg.issue}:" />
+                    <p:column>
+                        <p:graphicImage value="//resources//img//issuetype//#{issueMainMBean.selectedIssue.issueType}.gif"/>
+                        <p:spacer width="10"/>
+                        <h:outputText value="#{msg.issueKey} - #{issueMainMBean.selectedIssue.issueNumber}" id="edva"/>
+                    </p:column>
+
+                    <h:outputText value="#{msg.title}:" />
+                    <h:outputText value="#{issueMainMBean.selectedIssue.title}" id="title"/>
+                </h:panelGrid>
+                <p:commandButton action="view"  ajax="false" icon="ui-icon-search"
+                                 value="#{msg.view}" styleClass="tableButton" />
+                <p:commandButton action="edit"  ajax="false" icon="ui-icon-pencil"
+                                 value="#{msg.edit}" styleClass="tableButton" />
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

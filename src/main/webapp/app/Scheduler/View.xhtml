@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms">
+
+    <ui:define name="title">#{msg.view}</ui:define>
+
+    <ui:define name="center">
+        <h:form>
+            <p:menubar autoDisplay="false" styleClass="detailMenu" id="detailMenuBar">
+                <p:menuitem value="#{msg.edit}" icon="ui-icon-pencil" rendered="#{schedulerMBean.schedulerModel.event.editable}" action="edit" immediate="true" ajax="false" styleClass="detailItem"/>
+                <p:submenu label="#{msg.opration}" icon="ui-icon-gear" styleClass="detailSubmenu"
+                           rendered="#{schedulerMBean.schedulerModel.editButtonVisible}">
+                    <p:menuitem value="#{msg.sendinvitation}" action="Invitation?faces-redirect=true"/>
+                </p:submenu>
+                <p:menuitem value="#{msg.back}" action="scheduler" immediate="true" ajax="false" styleClass="detailItem"/>
+            </p:menubar>
+
+            <p:panel>
+                <h2 style="margin-top: 0">#{schedulerMBean.schedulerModel.event.title}</h2>
+                <p:messages/>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{msg.from}:"  styleClass="detailLabel"/>
+                    <h:outputLabel id="from" value="#{schedulerMBean.schedulerModel.event.dateFrom}" styleClass="detailText">
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone=""/>
+                    </h:outputLabel>
+
+                    <h:outputLabel value="#{msg.to}:"  styleClass="detailLabel"/>
+                    <h:outputLabel id="to" value="#{schedulerMBean.schedulerModel.event.dateTo}" styleClass="detailText">
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone=""/>
+                    </h:outputLabel>
+                    <h:outputText  value="#{msg.ivitedhearings}:"  rendered="#{schedulerMBean.schedulerModel.event.hearings.size()>0}" styleClass="detailLabel"/>
+                    <ui:repeat value="#{schedulerMBean.schedulerModel.event.hearings.toArray()}" var="hear" varStatus="loop" rendered="#{schedulerMBean.schedulerModel.event.hearings.size()>0}">
+                        <h:outputText value="#{hear.name} #{hear.surname}" styleClass="detailText"/>
+                        <h:outputText value="#{!loop.last ? ', ' :'.'}" styleClass="detailText"/>
+                    </ui:repeat>
+                    <h:outputText value="#{msg.description}:" styleClass="detailLabel"/>
+                    <h:outputText value="#{schedulerModel.event.desciption}" styleClass="detailText"/>
+                </h:panelGrid>
+
+
+            </p:panel>
+        </h:form>
+        <script>
+            $(document).ready(function() {
+                $('div').removeClass('ui-state-disabled');
+            })
+        </script>
+    </ui:define>
+
+
+</ui:composition>

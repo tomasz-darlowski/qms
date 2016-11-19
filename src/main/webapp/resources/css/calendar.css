@@ -1,0 +1,83 @@
+/*
+    Document   : calendar
+    Created on : 2013-07-11, 17:30:39
+    Author     : Tomek
+    Description:
+        Purpose of the stylesheet follows.
+*/
+.scheduler{
+    font-size: 0.8em
+}
+
+.fc-agenda-slots td div{
+    height: 25px !important;
+}
+
+.fc-sun{
+    background: #ededed !important;
+}
+
+.fc-sat{
+    background: #ededed !important;
+}
+
+.fc-today{
+    background: #FFFB73 !important;
+}
+
+.ui-widget-header{
+    background: #057D9F !important;
+    color: white !important;
+}
+.fc-button{
+    background: #057D9F !important;
+    color: white !important;
+}
+
+
+/*
+Kolor eventów
+*/
+.Low .fc-event-skin
+{
+    background: #00F03A;
+    color: black;
+}
+
+.Medium .fc-event-skin
+{
+    background: #00ADFF;
+    color: black;
+}
+
+.High .fc-event-skin
+{
+    background: #F54D0C;
+    color: black;
+}
+
+.gauge .fc-event-skin
+{
+    background: black;
+    color: white;
+}
+
+.oldlow .fc-event-skin
+{
+    background-color: #9dffa0;
+    color: black;
+}
+
+.oldmedium .fc-event-skin
+{
+    background-color: #aad9ff;
+
+    color: black;
+}
+
+.oldhigh .fc-event-skin
+{
+    background-color: #ffb8c3;
+    color: black;
+}
+

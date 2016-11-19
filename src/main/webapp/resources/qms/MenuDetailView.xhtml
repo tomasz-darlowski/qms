@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="persist" method-signature="java.lang.String action()"/>
+        <cc:attribute name="persistAction" method-signature="java.lang.String action()"/>
+        <cc:attribute name="persistAndEditAction" method-signature="java.lang.String action()"/>
+        <cc:attribute name="persistRender" default="false"/>
+        <cc:attribute name="persistActionRender" default="true"/>
+        <cc:attribute name="persistAndEditActionRender" default="false"/>
+        <cc:attribute name="deleteActionRender" default="true"/>
+        <cc:attribute name="imageVisible" default="true"/>
+        <cc:attribute name="documentVisible" default="true"/>
+        <cc:attribute name="attachSubMenuRender" default="true"/>
+        <cc:attribute name="operationSubMenuRender" default="true"/>
+        <cc:attribute name="validateOption" default="false"/>
+        <cc:attribute name="backNavigationString" type="java.lang.String" required="true"/>
+        <cc:attribute name="backNavigationStringRender" default="true"/>
+        <cc:attribute name="backToViewRender" default="false"/>
+        <cc:attribute name="editRender" default="false"/>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <p:menubar autoDisplay="false" styleClass="detailMenu" id="detailMenuBar">
+            <p:menuitem value="#{msg.edit}" icon="ui-icon-pencil" rendered="#{cc.attrs.editRender}" outcome="edit" immediate="true" ajax="false" styleClass="detailItem"/>
+            <p:submenu label="#{msg.opration}" icon="ui-icon-gear" rendered="#{cc.attrs.operationSubMenuRender}" styleClass="detailSubmenu">
+                <p:menuitem value="#{msg.save}" action="#{cc.attrs.persist}" ajax="false" rendered="#{cc.attrs.persistRender}" />
+                <p:menuitem value="#{msg.saveandclose}" action="#{cc.attrs.persistAction}" ajax="false" rendered="#{cc.attrs.persistActionRender}" />
+                <p:menuitem value="#{msg.saveandedit}" action="#{cc.attrs.persistAndEditAction}" ajax="false" rendered="#{cc.attrs.persistAndEditActionRender}" />
+                <p:menuitem value="#{msg.delete}" onclick="deleteDlg.show();" rendered="#{cc.attrs.deleteActionRender}"/>
+            </p:submenu>
+
+            <p:submenu label="#{msg.attach}" icon="ui-icon-plus" rendered="#{cc.attrs.attachSubMenuRender}" styleClass="detailSubmenu">
+                <p:menuitem value="#{msg.image}" onclick="imageDlg.show();" icon="ui-icon-image" rendered="#{cc.attrs.imageVisible}"/>
+                <p:menuitem value="#{msg.document}" onclick="documentDlg.show();"  icon="ui-icon-document" rendered="#{cc.attrs.documentVisible}"/>
+            </p:submenu>
+            <p:menuitem value="#{msg.back}" outcome="#{cc.attrs.backNavigationString}" immediate="true" ajax="false" styleClass="detailItem" rendered="#{cc.attrs.backNavigationStringRender}"/>
+            <p:menuitem value="#{msg.back}" action="#{commonNavigationRule.goBackToView()}" immediate="true" ajax="false" styleClass="detailItem" rendered="#{cc.attrs.backToViewRender}"/>
+        </p:menubar>
+    </cc:implementation>
+</html>

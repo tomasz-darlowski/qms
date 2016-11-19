@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms"
+                xmlns:poue="http://primefaces.org/ui/extensions">
+
+    <ui:define name="title">
+        #{msg.create}
+    </ui:define>
+
+    <ui:define name="center">
+        <h:form id="form">
+            <qms:MenuDetailView persistAction="#{componentMBean.createAndClose()}"
+                                persistActionRender="true"
+                                persistAndEditAction="#{componentMBean.createAndEdit()}"
+                                persistAndEditActionRender="true"
+                                deleteActionRender="false"
+                                documentVisible="true"
+                                imageVisible="true"
+                                backNavigationString="components"
+                                attachSubMenuRender="false"/>
+            <p:panel>
+                <h:panelGrid columns="3" >
+
+                    <p:outputLabel for="name" value="#{msg.name}" styleClass="detailLabel"/>
+                    <p:inputText id="name" value="#{componentMBean.component.name}" requiredMessage="#{msg.fieldmandatory}" required="true"
+                                 size="60" maxlength="60" autocomplete="off" styleClass="detailText">
+                    </p:inputText>
+                    <p:message for="name" />
+
+                    <p:outputLabel for="refNumber" value="#{msg.referencenumber}" styleClass="detailLabel"/>
+                    <p:inputText id="refNumber" value="#{componentMBean.component.referenceNumber}" requiredMessage="#{msg.fieldmandatory}"
+                                 required="true" size="20" maxlength="20" styleClass="detailText">
+                        <f:validator validatorId="CheckIfExistCompRef" />
+                    </p:inputText>
+                    <p:message for="refNumber" />
+
+                    <p:outputLabel for="description" value="#{msg.description}" styleClass="detailLabel"/>
+                    <p:inputTextarea rows="14" value="#{componentMBean.component.description}" id="description" styleClass="textArea detailText" autoResize="false"/>
+                    <p:message for="description" />
+
+                    <p:outputLabel for="supplier" value="#{msg.supplier}" styleClass="detailLabel"/>
+                    <qms:supplierCombo value="#{componentMBean.component.supplier}" id="supplier"/>
+                    <p:message for="supplier" />
+
+                    <p:outputLabel for="customer" value="#{msg.customer}" styleClass="detailLabel"/>
+                    <qms:CustomerCombo id="customer" value="#{componentMBean.component.customer}"/>
+                    <p:message for="customer" />
+
+                    <p:outputLabel for="finalProduct" value="#{msg.finalcomponent}?" styleClass="detailLabel"/>
+                    <p:selectBooleanCheckbox value="#{componentMBean.component.finalProduct}" id="finalProduct" styleClass="detailText">
+                        <p:ajax update="refcomponentsLabel"/>
+                    </p:selectBooleanCheckbox>
+                    <p:message for="finalProduct" />
+
+                    <p:outputLabel id="refcomponentsLabel" for="refcomponents" value="#{!componentMBean.component.finalProduct ? msg.referencedcomponents : msg.componentparts}" styleClass="detailLabel"/>
+                    <p:autoComplete id="refcomponents" value="#{componentMBean.component.relatedComponents}"
+                                    completeMethod="#{componentMBean.complete}" multiple="true" var="comp"
+                                    itemLabel="#{comp.referenceNumber}" itemValue="#{comp}" converter="componentConverter"
+                                    required="false"  styleClass="detailText">
+                        <p:column>
+                            #{comp.referenceNumber} - #{comp.name}
+                        </p:column>
+                    </p:autoComplete>
+                    <p:message for="refcomponents"  />
+
+                    <p:outputLabel for="active" value="#{msg.active}?" styleClass="detailLabel"/>
+                    <p:selectBooleanCheckbox value="#{componentMBean.component.active}" id="active" styleClass="detailText"/>
+                    <p:message for="active" />
+
+                </h:panelGrid>
+
+            </p:panel>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

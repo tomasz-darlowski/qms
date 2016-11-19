@@ -1,0 +1,52 @@
+.navigateBtn {
+    font-size: 0.8em !important;
+    font-weight: bolder !important;
+    color: white !important;
+    width: 120px;
+    height:30px;
+    margin-right: 5px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    border-color: #057D9F !important;
+    background: #057D9F;
+    background-color: #057D9F;
+    /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#216477', endColorstr='#39aecf',GradientType=0 ) !important;  IE6-9 */
+}
+
+#headerForm\:collectionsButton{
+    background: #057D9F;
+}
+#headerForm\:documentButton{
+    background: #057D9F;
+}
+#headerForm\:gaugesButton{
+    background: #057D9F;
+}
+#headerForm\:componentsButton{
+    background: #057D9F;
+}
+#headerForm\:schedulerButton{
+    background: #057D9F;
+}
+#headerForm\:issueButton{
+    background: #057D9F;
+}
+#headerForm\:dashboardButton{
+    background: #057D9F;
+}
+
+.navigateBtn:hover{
+    color: #FF8100 !important;
+}
+
+.logoutLink{
+    font-size: 0.7em !important;
+}
+
+.logoutLink:hover{
+    font-size: 0.7em !important;
+    text-decoration: underline !important;
+}
+
+
+

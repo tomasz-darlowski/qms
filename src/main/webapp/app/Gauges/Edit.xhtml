@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Detail.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:qms="http://java.sun.com/jsf/composite/qms">
+
+    <ui:define name="title">
+        #{msg.edit}
+    </ui:define>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="item" value="#{gauageMBean.gauage}" converter="gauageRefConverter"
+                         required="true" requiredMessage="Bad request. Please use a link from within the system."/>
+            <f:viewAction action="#{gauageMBean.reinit()}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h:form id="form">
+            <qms:MenuDetailView persistAction="#{gauageMBean.saveAndClose()}"
+                                persistActionRender="true"
+                                deleteActionRender="false"
+                                documentVisible="true"
+                                imageVisible="true"
+                                validateOption="true"
+                                backNavigationString="gauges"
+                                backNavigationStringRender="false"
+                                backToViewRender="true"
+                                persist="#{gauageMBean.save()}"
+                                persistRender="true"/>
+
+            <p:panel>
+                <p:messages/>
+                <h:panelGrid columns="3" >
+
+                    <p:outputLabel for="refnumber" value="#{msg.referencenumber}:" styleClass="detailLabel"/>
+                    <p:inputText id="refnumber" value="#{gauageMBean.gauage.referenceNumber}" requiredMessage="#{msg.fieldmandatory}"
+                                 required="true"  size="20" maxlength="8" styleClass="detailText">
+                        <f:validator validatorId="CheckIfGaugeRefExistEdit" />
+                        <f:attribute name="gauageUID" value="#{gauageMBean.gauage.uid}"/>
+                    </p:inputText>
+                    <p:message for="refnumber" />
+
+                    <p:outputLabel for="date" value="#{msg.validationdate}:" styleClass="detailLabel"/>
+                    <p:calendar id="date" value="#{gauageMBean.gauage.validationDate}"
+                                requiredMessage="#{msg.fieldmandatory}" required="true" navigator="true" size="12"
+                                pattern="dd/MM/yyyy" timeZone="" styleClass="detailText">
+                    </p:calendar>
+                    <p:message for="date" />
+
+                    <p:outputLabel for="period" value="#{msg.period}:" styleClass="detailLabel"/>
+                    <p:spinner id="period" value="#{gauageMBean.gauage.validationPeriod}" min="1" max="60" size="2" required="true" styleClass="detailText"
+                               validatorMessage="#{text['gauges.detail.validationperiod.error']}">
+                        <f:validateLongRange minimum="1" maximum="60"/>
+                    </p:spinner>
+                    <p:message for="period" />
+
+                    <p:outputLabel for="refcomponents" value="#{msg.referencedcomponents}:" styleClass="detailLabel"/>
+                    <p:autoComplete id="refcomponents" value="#{gauageMBean.gauage.relatedComponents}"
+                                    completeMethod="#{gauageMBean.complete}" multiple="true" var="comp"
+                                    itemLabel="#{comp.referenceNumber} - #{comp.name}" itemValue="#{comp}" converter="componentConverter"
+                                    styleClass="detailText"
+                                    required="false" style="width: 800px !important">
+                        <p:column>
+                            #{comp.referenceNumber} - #{comp.name}
+                        </p:column>
+                    </p:autoComplete>
+                    <p:message for="refcomponents" />
+
+                    <p:outputLabel for="description" value="#{msg.description}:" styleClass="detailLabel"/>
+                    <p:inputTextarea rows="14" value="#{gauageMBean.gauage.description}" id="description" styleClass="textArea detailText" autoResize="false" />
+                    <p:message for="description" />
+
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+        <h:form>
+            <qms:fileTable rowExpandRendered="false" items="#{gauageMBean.images}" delAction="#{gauageMBean.removeFile()}"
+                           header="#{msg.images}" selection="#{fileMBean.fileEntity}" confDlgvar="imgConf"
+                           rendered="#{gauageMBean.images.size() > 0}"/>
+            <qms:fileTable items="#{gauageMBean.docs}" delAction="#{gauageMBean.removeFile()}"
+                           header="#{msg.documents}" selection="#{fileMBean.fileEntity}" confDlgvar="docConf"
+                           rendered="#{gauageMBean.docs.size() > 0}"/>
+        </h:form>
+
+        <qms:DialogUploadImages actionListener="#{gauageMBean.uploadImage()}" file="#{fileMBean.file}"
+                                header="#{msg.images}" widgetWar="imageDlg"/>
+
+        <qms:DialogUploadDocs actionListener="#{gauageMBean.uploadDocument()}" file="#{fileMBean.file}"
+                              header="#{msg.documents}" widgetWar="documentDlg"/>
+
+
+
+    </ui:define>
+
+</ui:composition>

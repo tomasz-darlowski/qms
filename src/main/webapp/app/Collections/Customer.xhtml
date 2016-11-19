@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../Templates/Master.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ez="http://java.sun.com/jsf/composite/qms"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:qms="http://xmlns.jcp.org/jsf/composite/qms"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{msg.customer}
+    </ui:define>
+
+    <ui:define name="left">
+        <h:form>
+            <p:commandLink value="#{msg.supplier}s" action="supplier" ajax="false" immediate="true" styleClass="menuLink" /><br/>
+            <p:commandLink value="#{msg.customer}s" action="customer" ajax="false" immediate="true" styleClass="menuLink" /><br/>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form id="form">
+
+            <h1>#{msg.customer}</h1>
+            <p:panel id="panel">
+                <p:messages/>
+                <h:panelGrid columns="3"  id="grid"  style="font-size: small">
+                    <p:outputLabel for="name" value="#{msg.name}" />
+                    <p:inputText id="name" value="#{customerMBean.customer.name}" requiredMessage="#{msg.fieldmandatory}"
+                                 required="true"  size="40" maxlength="40">
+                        <f:validator validatorId="CheckIfCustomerNameExist"/>
+                        <f:attribute name="CustomerID" value="#{customerMBean.customer.id}" />
+                    </p:inputText>
+                    <p:message for="name" />
+
+                    <p:outputLabel for="email" value="#{msg.email}" />
+                    <p:inputText id="email" value="#{customerMBean.customer.email}"
+                                 requiredMessage="#{msg.fieldmandatory}" validatorMessage="Invalid email format"
+                                 required="true"  size="40" maxlength="80">
+                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" for="email"/>
+                    </p:inputText>
+                    <p:message for="email" />
+
+                    <p:outputLabel for="address" value="#{msg.address}" />
+                    <p:inputText id="address" value="#{customerMBean.customer.address}"
+                                 size="55" maxlength="80">
+                    </p:inputText>
+                    <p:message for="address" />
+
+                    <p:outputLabel for="telephone" value="#{msg.phone}" />
+                    <p:inputText id="telephone" value="#{customerMBean.customer.telephone}"
+                                 requiredMessage="#{msg.fieldmandatory}" required="true"
+                                 validatorMessage="Phone length must be between 9 and 20" size="20" maxlength="30" >
+                        <f:validateLength minimum="9" maximum="20" for="telephone"/>
+                    </p:inputText>
+                    <p:message for="telephone" />
+
+                    <p:outputLabel for="contactPerson" value="#{msg.contactperson}" />
+                    <p:inputText id="contactPerson" value="#{customerMBean.customer.contactPerson}"
+                                 size="55" maxlength="60">
+                    </p:inputText>
+                    <p:message for="contactPerson" />
+                </h:panelGrid>
+                <h:panelGrid columns="2" >
+                    <h:panelGroup>
+                        <p:commandLink id="updateButton" action="#{customerMBean.updateCustomer()}"
+                                       ajax="false" value="#{msg.save}"/>
+                        <p:tooltip for="updateButton" />
+                        <p:spacer width="20"/>
+                        <p:commandLink id="resetButton" value="#{msg.reset}" update="panel" process="@this">
+                            <p:resetInput target="panel"/>
+                        </p:commandLink>
+                        <p:tooltip for="resetButton" />
+                    </h:panelGroup>
+                </h:panelGrid>
+            </p:panel>
+            <p:dataTable value="#{customerMBean.customerList}"
+                         var="customer" emptyMessage="" paginator="true"
+                         rows="30" paginatorAlwaysVisible="false"
+                         paginatorPosition="bottom" styleClass="itemListTable">
+                <f:facet name="header">
+                    <p:outputPanel style="position: relative; ">
+                        <h:outputText value="#{msg.customer}" />
+                    </p:outputPanel>
+                </f:facet>
+                <p:column  sortBy="#{customer.name}" headerText="#{msg.name}" style="font-size: 0.8em">
+                    #{customer.name}
+                </p:column>
+                <p:column sortBy="#{customer.email}" headerText="#{msg.email}" style="font-size: 0.8em">
+                    #{customer.email}
+                </p:column>
+                <p:column style="width: 20px; text-align: center">
+                    <p:splitButton icon="ui-icon-search" value="#{msg.view}" update=":form:display"
+                                   oncomplete="custView.show();" style="font-size: 10px" process="@this">
+                        <f:setPropertyActionListener value="#{customer}" target="#{customerMBean.selectedCustomer}" />
+                        <p:menuitem value="#{msg.edit}" icon="ui-icon-pencil" update=":form:panel" style="font-size: 10px" process="@this">
+                            <f:setPropertyActionListener value="#{customer}" target="#{customerMBean.customer}" />
+                        </p:menuitem>
+                        <p:menuitem value="#{msg.delete}" onclick="deleteDlg.show();"  icon="ui-icon-trash" style="font-size: 10px" process="@this">
+                            <f:setPropertyActionListener value="#{customer}" target="#{customerMBean.selectedCustomer}" />
+                        </p:menuitem>
+                    </p:splitButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:dialog header="#{msg.customerdetail}" widgetVar="custView" resizable="false"
+                      modal="true" styleClass="dialogWindow">
+
+                <h:panelGrid id="display" columns="2" cellpadding="4" >
+
+                    <h:outputText value="#{msg.name}" />
+                    <h:outputText value="#{customerMBean.selectedCustomer.name}"
+                                  style="font-weight:bold;"/>
+
+                    <h:outputText value="#{msg.email}" />
+                    <h:outputText value="#{customerMBean.selectedCustomer.email}"
+                                  style="font-weight:bold;"/>
+
+
+                    <h:outputText value="#{msg.address}" />
+                    <h:outputText value="#{customerMBean.selectedCustomer.address}"
+                                  style="font-weight:bold"/>
+
+                    <h:outputText value="#{msg.phone}" />
+                    <h:outputText value="#{customerMBean.selectedCustomer.telephone}"
+                                  style="font-weight:bold"/>
+
+                    <h:outputText value="#{msg.contactperson}" />
+                    <h:outputText value="#{customerMBean.selectedCustomer.contactPerson}"
+                                  style="font-weight:bold"/>
+
+                </h:panelGrid>
+
+            </p:dialog>
+
+            <qms:confirmDialog yesAction="#{customerMBean.delCustomer()}"/>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
